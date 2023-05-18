@@ -1,0 +1,8 @@
+- crosshair on target
+- attacks and tower shots
+
+- player movment speed limit
+- only 16:9 phone
+- check why blurry when resizing game screen
+- tower area effector
+- minion object pooling
