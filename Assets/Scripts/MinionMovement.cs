@@ -2,25 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Minion))]
 public class MinionMovement : EntityMovement
 {
-    private Vector3 startingPos;
     private Minion minion;
 
     protected override void Awake()
     {
         base.Awake();
-        if (GetComponent<Minion>() != null)
-        {
-            minion = GetComponent<Minion>();
-        }
-        else Debug.Log("Missing component Minion");
+        minion = GetComponent<Minion>();
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
-        startingPos = transform.position;
         if (minion.EntityTeam == Entity.Team.Blue)
         {
             moveDir = Vector2.right;
@@ -29,7 +23,6 @@ public class MinionMovement : EntityMovement
         {
             moveDir = Vector2.left;
         }
-        speed = 2f;
     }
 
     // Update is called once per frame

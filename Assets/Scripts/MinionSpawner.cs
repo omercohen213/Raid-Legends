@@ -3,20 +3,10 @@ using UnityEngine;
 
 public class MinionSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject minionPrefab;
-    [SerializeField] private Transform blueMinions;
-    [SerializeField] private Transform redMinions;
+    [SerializeField] private GameObject redMageMinionPrefab;
+    [SerializeField] private GameObject blueMageMinionPrefab;
     [SerializeField] private Transform blueMinionsSpawner;
     [SerializeField] private Transform redMinionsSpawner;
-    private Minion minion;
-    private readonly float minionSize = 0.5f;
-
-    // Start is called before the first frame update
-    private void Awake()
-    {
-        if (minionPrefab == null)
-            Debug.Log("Missing minion prefab");
-    }
 
     void Start()
     {
@@ -47,19 +37,21 @@ public class MinionSpawner : MonoBehaviour
     public void Spawn(Entity.Team team)
     {
         GameObject minion;
+        GameObject minionPrefab = null;
+        Transform spawnerTransform = null;
+
         if (team == Entity.Team.Blue)
         {
-            minion = Instantiate(minionPrefab, blueMinionsSpawner.transform.position, Quaternion.identity, blueMinions);
-            minion.transform.localScale = new Vector3(minionSize, minionSize);
-            minion.GetComponent<Minion>().EntityTeam = Entity.Team.Blue;
-            minion.GetComponent<SpriteRenderer>().color = Color.blue;
+            minionPrefab = blueMageMinionPrefab;
+            spawnerTransform = blueMinionsSpawner;
         }
+
         else if (team == Entity.Team.Red)
         {
-            minion = Instantiate(minionPrefab, redMinionsSpawner.transform.position, Quaternion.identity, redMinions);
-            minion.transform.localScale = new Vector3(-minionSize, minionSize);
-            minion.GetComponent<Minion>().EntityTeam = Entity.Team.Red;
-            minion.GetComponent<SpriteRenderer>().color = Color.red;
+            minionPrefab = redMageMinionPrefab;
+            spawnerTransform = redMinionsSpawner;
         }
+
+        minion = Instantiate(minionPrefab, spawnerTransform.transform.position, Quaternion.identity, spawnerTransform);
     }
 }
