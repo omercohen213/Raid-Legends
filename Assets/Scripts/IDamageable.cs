@@ -4,7 +4,9 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    void ReceiveDamage(int damageAmount);
+    public void ReceiveDamage(int damage);
+    public void Attack(Entity entity);
+    void OnHpChange();
     void Death();
     //bool IsDamageToKill(float damage);
     //void GetStun(float duration);

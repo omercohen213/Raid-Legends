@@ -1,19 +1,24 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Abilities : MonoBehaviour
 {
     [SerializeField] private GameObject touchPrefab;
     [SerializeField] private Player player;
-    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Image basicAttackImage;   
+    [SerializeField] private Ability basicAttack;
+    private float transitionDuration = 0.2f;
+
     private InputActionAsset playerInputActions;
     private InputAction screenPressAction;
     private InputAction screenHoldAction;
     private InputAction touchPositionAction;
 
-    GameObject touchObject;
+    //GameObject touchObject;
     private readonly UnityEvent onBasicAttackTouch = new();
     private readonly UnityEvent onAbility1Touch = new();
     private readonly UnityEvent onAbility2Touch = new();
@@ -35,8 +40,14 @@ public class Abilities : MonoBehaviour
 
     private void OnDisable()
     {
-        screenPressAction.performed += CheckTouchPosition;
+        screenPressAction.performed -= CheckTouchPosition;
         //screenHoldAction.performed += CheckHoldPosition;
+    }
+
+    private void Update()
+    {
+        //screenPressAction.started += CheckTouchPosition;
+        //screenPressAction. canceled-= CheckTouchPosition;
     }
 
     private void CheckHoldPosition(InputAction.CallbackContext obj)
@@ -54,42 +65,111 @@ public class Abilities : MonoBehaviour
 
     private void CheckTouchPosition(InputAction.CallbackContext context)
     {
-        Vector2 touchPosition = touchPositionAction.ReadValue<Vector2>();
-        
-        RaycastHit2D hit = Physics2D.Raycast(touchPosition, Vector2.zero);
-        Collider2D coll = hit.collider;
+        float touchValue = context.ReadValue<float>();
 
-        if (coll != null && coll.gameObject.layer == LayerMask.NameToLayer("UI"))
+        if (touchValue > 0.0f)
         {
-            switch (coll.gameObject.name)
+            Vector2 touchPosition = touchPositionAction.ReadValue<Vector2>();
+
+            RaycastHit2D hit = Physics2D.Raycast(touchPosition, Vector2.zero);
+            Collider2D coll = hit.collider;
+
+            if (coll != null && coll.gameObject.layer == LayerMask.NameToLayer("UI"))
             {
-                case "BasicAttack":
-                    onBasicAttackTouch.Invoke();
-                    break;
-                case "Ability1":
-                    onAbility1Touch.Invoke();
-                    break;
-                case "Ability2":
-                    onAbility2Touch.Invoke();
-                    break;
-                case "Ability3":
-                    onAbility3Touch.Invoke();
-                    break;
-                default: break;
-            }
+                /* if (!basicAttack.isCd) // Ability is not on cd and no ability animation is active
+                 {
+                     onBasicAttackTouch.Invoke();
+                     DisableAbilityUse(basicAttack);
+                 }
+                 else if (basicAttack.isCd) // Ability on cd
+                     ApplyCooldown(basicAttack);*/
+
+                switch (coll.gameObject.name)
+                {
+                    case "BasicAttack":
+                        onBasicAttackTouch.Invoke();
+                        break;
+                    case "Ability1":
+                        onAbility1Touch.Invoke();
+                        break;
+                    case "Ability2":
+                        onAbility2Touch.Invoke();
+                        break;
+                    case "Ability3":
+                        onAbility3Touch.Invoke();
+                        break;
+                    default: break;
+                }
+            }      
         }
+    }
 
-        /*GameObject parent = GameObject.Find("UI");
-        touchObject = Instantiate(touchPrefab, touchPosition, Quaternion.identity, parent.transform);
-        if (screenPressAction.phase == InputActionPhase.Performed)
-            Destroy(touchObject);   */
 
+    /*GameObject parent = GameObject.Find("UI");
+    touchObject = Instantiate(touchPrefab, touchPosition, Quaternion.identity, parent.transform);
+    if (screenPressAction.phase == InputActionPhase.Performed)
+        Destroy(touchObject);   */
+
+    private void ApplyCooldown(Ability ability)
+    {
+        /*if (ability.isAnimationActive)
+        {
+            disableAllTimer -= Time.deltaTime;
+            if (disableAllTimer < 0) // Animation has ended and we can use another ability
+            {
+                ability.isAnimationActive = false;
+                disableAll = false;
+                disableAllTimer = 0;
+            }
+        }*/
+        // Reduce cd till it reaches 0 so we can use it again
+        ability.cdTimer -= Time.deltaTime;
+
+        // Cd is over
+        if (ability.cdTimer < 0)
+        {
+            ability.isCd = false;
+            ability.cdTimer = 0;
+            //ability.abilityCdImage.fillAmount = 0.0f;
+        }
+        // Still on cd
+        else
+        {
+            //ability.abilityCdImage.fillAmount = ability.cdTimer / ability.cd;
+        }
+    }
+
+    // Disable this ability use for cd time, disable all abilties for animation time
+    private void DisableAbilityUse(Ability ability)
+    {
+        // To avoid using 2 abilities at the same time     
+        /*        ability.isAnimationActive = true;
+                disableAllTimer = ability.animationTime;
+                disableAll = true;*/
+        ability.isCd = true;
+        ability.cdTimer = ability.cd;
     }
 
     private void BasicAttack()
-    {
-        playerMovement.Attack();
+    {     
+        Debug.Log("BasicAttack");
+        ShowTouch();
+        player.AttackAnimation();
+        player.ShowPlayerRange(transitionDuration);         
+    }    
 
+    private void ShowTouch()
+    {
+        float shrinkScale = 0.8f;
+        basicAttackImage.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
+        StartCoroutine(ResetImage());
+    }
+
+    private IEnumerator ResetImage()
+    {
+        yield return new WaitForSeconds(transitionDuration);
+        float normalScale = 1f;
+        basicAttackImage.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
     }
 
     private void Ability1()
