@@ -14,13 +14,19 @@ public class Player : Entity
     private readonly float joystickMinInput = 0.25f;
     private readonly float attackAnimationTime = 1f;
 
-    void Update()
+    protected override void Start()
+    {
+        base.Start();
+        targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion };
+    }
+
+    private void Update()
     {
         float horizontalInput = joystick.Horizontal;
         float verticalInput = joystick.Vertical;
 
-        // Move only if joystick input acceeds the minimal input
-        if (horizontalInput > joystickMinInput || verticalInput > joystickMinInput || horizontalInput < -joystickMinInput || verticalInput < -joystickMinInput)
+        // Move only if joystick input exceeds the minimum input threshold
+        if (Mathf.Abs(horizontalInput) > joystickMinInput || Mathf.Abs(verticalInput) > joystickMinInput)
         {
             // Negative scales to match sprite movement
             Vector3 currentPlayerScale = transform.localScale;
@@ -38,11 +44,15 @@ public class Player : Entity
             transform.localScale = currentPlayerScale;
             bars.localScale = currentBarsScale;
 
-            moveDir = new Vector3(horizontalInput * speed, verticalInput * speed, 0);
+            moveDir = new Vector3(horizontalInput, verticalInput, 0);
             Walk();
-            UpdateMovement(moveDir);
         }
-        else WalkOff();
+        else
+        {
+            moveDir = Vector3.zero;
+            WalkOff();
+        }
+        base.UpdateMovement(moveDir);
     }
 
     public void ShowPlayerRange(float timeBeforeHide)
@@ -103,13 +113,9 @@ public class Player : Entity
     private IEnumerator AttackAnimationCancel()
     {
         yield return new WaitForSeconds(attackAnimationTime);
-        AttackOff();
-    }
-
-    public void AttackOff()
-    {
         anim.SetBool("Attack", false);
     }
+
 
 
 }

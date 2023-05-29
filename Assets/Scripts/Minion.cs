@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -14,14 +15,15 @@ public class Minion : Entity
     protected override void Start()
     {
         base.Start();
-        if (minion.EntityTeam == Team.Blue)
+        if (EntityTeam == Team.Blue)
         {
             moveDir = Vector2.right;
         }
-        else if (minion.EntityTeam == Team.Red)
+        else if (EntityTeam == Team.Red)
         {
             moveDir = Vector2.left;
         }
+        targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower};
     }
 
     // Update is called once per frame

@@ -2,10 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Serializable]
-[CreateAssetMenu(fileName = "ScriptableObjects", menuName = "ScriptableObjects/Ability")]
-public class Ability : ScriptableObject
-{
+public class Ability: MonoBehaviour
+{ 
     public string abilityName;
     public float cd;
     public float cdTimer = 0;
