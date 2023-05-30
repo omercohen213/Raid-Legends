@@ -6,22 +6,22 @@ using static Entity;
 public class MinionSpawner : MonoBehaviour
 {
 
-    [SerializeField] private GameObject redMageMinionPrefab;
-    [SerializeField] private GameObject blueMageMinionPrefab;
-    [SerializeField] private Transform blueMinionsSpawner;
-    [SerializeField] private Transform redMinionsSpawner;
+    [SerializeField] private GameObject _blueMageMinionPrefab;
+    [SerializeField] private GameObject _redMageMinionPrefab;
+    [SerializeField] private Transform _blueMinionsSpawner;
+    [SerializeField] private Transform _redMinionsSpawner;
 
-    private readonly int numOfMinionsInWave = 5;
-    private readonly float waveSpawnTime = 10;
-    private readonly float minionSpawnTime = 2;
+    private readonly int _numOfMinionsInWave = 5;
+    private readonly float _waveSpawnTime = 10;
+    private readonly float _minionSpawnTime = 2;
 
-    ObjectPool<Minion> blueMinionsPool;
-    ObjectPool<Minion> redMinionsPool;
+    private ObjectPool<Minion> _blueMinionsPool;
+    private ObjectPool<Minion> _redMinionsPool;
 
     void Start()
     {
-        blueMinionsPool = new ObjectPool<Minion>(CreateBlueMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
-        redMinionsPool = new ObjectPool<Minion>(CreateRedMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
+        _blueMinionsPool = new ObjectPool<Minion>(CreateBlueMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
+        _redMinionsPool = new ObjectPool<Minion>(CreateRedMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
         StartCoroutine(SpawnMinions());
     }
 
@@ -30,38 +30,38 @@ public class MinionSpawner : MonoBehaviour
         int spawnCount = 0;
         while (true)
         {
-            if (spawnCount < numOfMinionsInWave)
+            if (spawnCount < _numOfMinionsInWave)
             {
                 Spawn();
                 spawnCount++;
             }
             else
             {
-                yield return new WaitForSeconds(waveSpawnTime); // Wait for 10 seconds before repeating the spawning
+                yield return new WaitForSeconds(_waveSpawnTime); // Wait for 10 seconds before repeating the spawning
                 spawnCount = 0;
             }
 
-            yield return new WaitForSeconds(minionSpawnTime); // Wait for 2 seconds before spawning the next minion
+            yield return new WaitForSeconds(_minionSpawnTime); // Wait for 2 seconds before spawning the next minion
         }
     }
 
     public void Spawn()
     {
-        Minion blueMinion = blueMinionsPool.Get();
-        Minion redMinion = redMinionsPool.Get();      
+        Minion blueMinion = _blueMinionsPool.Get();
+        Minion redMinion = _redMinionsPool.Get();      
 
-        blueMinion.transform.SetPositionAndRotation(blueMinionsSpawner.position, Quaternion.identity);
-        redMinion.transform.SetPositionAndRotation(redMinionsSpawner.position, Quaternion.identity);
-        blueMinion.transform.parent = blueMinionsSpawner;
-        redMinion.transform.parent = redMinionsSpawner;
+        blueMinion.transform.SetPositionAndRotation(_blueMinionsSpawner.position, Quaternion.identity);
+        redMinion.transform.SetPositionAndRotation(_redMinionsSpawner.position, Quaternion.identity);
+        blueMinion.transform.parent = _blueMinionsSpawner;
+        redMinion.transform.parent = _redMinionsSpawner;
     }
 
     // Instantiate a new blue minion
     private Minion CreateBlueMinion()
     {      
-        GameObject minionGo = Instantiate(blueMageMinionPrefab);
+        GameObject minionGo = Instantiate(_blueMageMinionPrefab);
         Minion minion = minionGo.GetComponent<Minion>();
-        minion.SetPool(blueMinionsPool);
+        minion.SetPool(_blueMinionsPool);
         minionGo.SetActive(false);
         return minion;
     }
@@ -69,9 +69,9 @@ public class MinionSpawner : MonoBehaviour
     // Instantiate a new red minion
     private Minion CreateRedMinion()
     {
-        GameObject minionGo = Instantiate(redMageMinionPrefab);
+        GameObject minionGo = Instantiate(_redMageMinionPrefab);
         Minion minion = minionGo.GetComponent<Minion>();
-        minion.SetPool(redMinionsPool);
+        minion.SetPool(_redMinionsPool);
         minionGo.SetActive(false);
         return minion;
     }
@@ -79,8 +79,8 @@ public class MinionSpawner : MonoBehaviour
     // Enable the minion when retrieved from the pool
     private void OnMinionGet(Minion minion)
     {
-        minion.gameObject.SetActive(true);
-        minion.Hp = minion.MaxHp;
+        minion.ResetHp();
+        minion.gameObject.SetActive(true);        
     }
 
     // Disable the minion when released back to the pool

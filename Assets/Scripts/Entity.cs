@@ -105,7 +105,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
                 ReceiveDamage(collEntity.BaseDamage);
                 //Debug.Log(this + " Damage Taken " + collEntity.BaseDamage);
             }
-        }               
+        }
     }
 
     public bool IsAgainst(Entity other)
@@ -142,9 +142,12 @@ public abstract class Entity : MonoBehaviour, IDamageable
             newScale.x = percentage;
         else newScale.x = 0;
         hpBar.localScale = newScale;
-        if (player.targetedEntity == this)
+        if (player.targetedEntity != null)
         {
-            UIManager.Instance.ShowUIEntityStats(gameObject);
+            if (player.targetedEntity == this)
+            {
+                UIManager.Instance.ShowUIEntityStats(gameObject);
+            }
         }
     }
 
@@ -173,7 +176,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
                 target.gameObject.SetActive(true);
             }
             else Debug.LogError("Missing target object");
-        }     
+        }
         targetedEntity = entity;
         UIManager.Instance.ShowUIEntityStats(entity.gameObject);
     }
@@ -208,5 +211,11 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         Debug.Log("Dead");
     }
-  
+
+    public virtual void ResetHp()
+    {
+        hp = maxHp;
+        OnHpChange();
+    }
+
 }

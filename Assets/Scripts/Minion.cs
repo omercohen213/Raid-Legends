@@ -6,13 +6,11 @@ using UnityEngine.Pool;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Minion : Entity
 {
-    private Minion minion;
     private ObjectPool<Minion> _pool;
 
     protected override void Awake()
     {
         base.Awake();
-        minion = GetComponent<Minion>();
     }
 
     protected override void Start()
@@ -50,4 +48,5 @@ public class Minion : Entity
             Destroy(gameObject);
         }
     }
+
 }
