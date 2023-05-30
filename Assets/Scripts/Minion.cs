@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Minion : Entity
 {
     private Minion minion;
+    private ObjectPool<Minion> _pool;
 
     protected override void Awake()
     {
@@ -32,8 +35,19 @@ public class Minion : Entity
         UpdateMovement(moveDir);
     }
 
+    public void SetPool(ObjectPool<Minion> pool) => _pool = pool;
+
     public override void Death()
     {
         gameObject.SetActive(false);
+        if (_pool != null)
+        {
+            _pool.Release(this);
+        }
+        else
+        {
+            Debug.Log("No pool", this);
+            Destroy(gameObject);
+        }
     }
 }

@@ -1,15 +1,27 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
+using static Entity;
 
 public class MinionSpawner : MonoBehaviour
 {
+
     [SerializeField] private GameObject redMageMinionPrefab;
     [SerializeField] private GameObject blueMageMinionPrefab;
     [SerializeField] private Transform blueMinionsSpawner;
     [SerializeField] private Transform redMinionsSpawner;
 
+    private readonly int numOfMinionsInWave = 5;
+    private readonly float waveSpawnTime = 10;
+    private readonly float minionSpawnTime = 2;
+
+    ObjectPool<Minion> blueMinionsPool;
+    ObjectPool<Minion> redMinionsPool;
+
     void Start()
     {
+        blueMinionsPool = new ObjectPool<Minion>(CreateBlueMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
+        redMinionsPool = new ObjectPool<Minion>(CreateRedMinion, OnMinionGet, OnMinionRelease, DestroyMinion);
         StartCoroutine(SpawnMinions());
     }
 
@@ -18,40 +30,68 @@ public class MinionSpawner : MonoBehaviour
         int spawnCount = 0;
         while (true)
         {
-            if (spawnCount < 5)
+            if (spawnCount < numOfMinionsInWave)
             {
-                Spawn(Entity.Team.Blue);
-                Spawn(Entity.Team.Red);
+                Spawn();
                 spawnCount++;
             }
             else
             {
-                yield return new WaitForSeconds(10f); // Wait for 10 seconds before repeating the spawning
+                yield return new WaitForSeconds(waveSpawnTime); // Wait for 10 seconds before repeating the spawning
                 spawnCount = 0;
             }
 
-            yield return new WaitForSeconds(2f); // Wait for 2 seconds before spawning the next minion
+            yield return new WaitForSeconds(minionSpawnTime); // Wait for 2 seconds before spawning the next minion
         }
     }
 
-    public void Spawn(Entity.Team team)
+    public void Spawn()
     {
-        GameObject minion;
-        GameObject minionPrefab = null;
-        Transform spawnerTransform = null;
+        Minion blueMinion = blueMinionsPool.Get();
+        Minion redMinion = redMinionsPool.Get();      
 
-        if (team == Entity.Team.Blue)
-        {
-            minionPrefab = blueMageMinionPrefab;
-            spawnerTransform = blueMinionsSpawner;
-        }
+        blueMinion.transform.SetPositionAndRotation(blueMinionsSpawner.position, Quaternion.identity);
+        redMinion.transform.SetPositionAndRotation(redMinionsSpawner.position, Quaternion.identity);
+        blueMinion.transform.parent = blueMinionsSpawner;
+        redMinion.transform.parent = redMinionsSpawner;
+    }
 
-        else if (team == Entity.Team.Red)
-        {
-            minionPrefab = redMageMinionPrefab;
-            spawnerTransform = redMinionsSpawner;
-        }
+    // Instantiate a new blue minion
+    private Minion CreateBlueMinion()
+    {      
+        GameObject minionGo = Instantiate(blueMageMinionPrefab);
+        Minion minion = minionGo.GetComponent<Minion>();
+        minion.SetPool(blueMinionsPool);
+        minionGo.SetActive(false);
+        return minion;
+    }
 
-        minion = Instantiate(minionPrefab, spawnerTransform.transform.position, Quaternion.identity, spawnerTransform);
+    // Instantiate a new red minion
+    private Minion CreateRedMinion()
+    {
+        GameObject minionGo = Instantiate(redMageMinionPrefab);
+        Minion minion = minionGo.GetComponent<Minion>();
+        minion.SetPool(redMinionsPool);
+        minionGo.SetActive(false);
+        return minion;
+    }
+
+    // Enable the minion when retrieved from the pool
+    private void OnMinionGet(Minion minion)
+    {
+        minion.gameObject.SetActive(true);
+        minion.Hp = minion.MaxHp;
+    }
+
+    // Disable the minion when released back to the pool
+    private void OnMinionRelease(Minion minion)
+    {
+        minion.gameObject.SetActive(false);
+    }
+
+    private void DestroyMinion(Minion minion)
+    {
+        Debug.Log("destroy");
+        Destroy(minion.gameObject);
     }
 }
