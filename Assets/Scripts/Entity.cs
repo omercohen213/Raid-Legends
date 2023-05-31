@@ -5,54 +5,63 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public abstract class Entity : MonoBehaviour, IDamageable
 {
-    protected Player player;
+    protected Player _player;
+    private SpriteRenderer _entitySpriteRenderer;
 
     // Team and type
-    [SerializeField] private Team team;
-    [SerializeField] private Type type;
+    [SerializeField] private Team _team;
+    [SerializeField] private Type _type;
 
     // Stats
-    protected int hp;
-    [SerializeField] protected int maxHp;
-    [SerializeField] protected int baseDamage;
-    protected int level;
+    protected int _hp;
+    [SerializeField] protected int _maxHp;
+    [SerializeField] protected int _baseDamage;
+    protected int _level;
 
     // Movement
-    private Collider2D coll;
-    protected Vector3 moveDir;
-    [SerializeField] protected float speed;
-    [SerializeField] Transform hpBar;
+    protected Vector3 _moveDir;
+    [SerializeField] protected float _speed;
+    [SerializeField] Transform _hpBar;
 
     // Targeting
-    protected Entity targetedEntity;
-    protected List<Entity> entitiesInRange;
-    protected List<Type> targetingPriority;
+    protected Entity _targetedEntity;
+    protected List<Entity> _entitiesInRange;
+    protected List<Type> _targetingPriority;
 
+    // Damage
+    protected float _critChance;
     //protected float lastDamage;
     //protected float damageDelay;
 
     public enum Team { Red, Blue }
     public enum Type { Minion, Player, Tower, AIPlayer }
-    public Team EntityTeam { get => team; set => team = value; }
-    public Type EntityType { get => type; set => type = value; }
-    public int Hp { get => hp; set => hp = value; }
-    public int MaxHp { get => maxHp; set => maxHp = value; }
-    public int BaseDamage { get => baseDamage; set => baseDamage = value; }
-    public Entity TargetedEntity { get => targetedEntity; set => targetedEntity = value; }
-    public List<Entity> EntitiesInRange { get => entitiesInRange; set => entitiesInRange = value; }
-    public List<Type> TargetingPriority { get => targetingPriority; set => targetingPriority = value; }
+    public Team EntityTeam { get => _team; set => _team = value; }
+    public Type EntityType { get => _type; set => _type = value; }
+    public int Hp { get => _hp; set => _hp = value; }
+    public int MaxHp { get => _maxHp; set => _maxHp = value; }
+    public int BaseDamage { get => _baseDamage; set => _baseDamage = value; }
+    public Entity TargetedEntity { get => _targetedEntity; set => _targetedEntity = value; }
+    public List<Entity> EntitiesInRange { get => _entitiesInRange; set => _entitiesInRange = value; }
+    public List<Type> TargetingPriority { get => _targetingPriority; set => _targetingPriority = value; }
 
     protected virtual void Awake()
     {
-        coll = GetComponent<Collider2D>();
-        player = GameObject.Find("Player").GetComponent<Player>();
+        if (!GameObject.Find("Player").TryGetComponent(out _player))
+        {
+            Debug.LogError("Missing Player object");
+        }
+
+        if (!transform.Find("Sprite").TryGetComponent(out _entitySpriteRenderer))
+        {
+            Debug.LogError("Missing Entity SpriteRenderer");
+        }
     }
 
     protected virtual void Start()
     {
-        hp = maxHp;
-        targetedEntity = null;
-        entitiesInRange = new List<Entity>();
+        _hp = _maxHp;
+        _targetedEntity = null;
+        _entitiesInRange = new List<Entity>();
     }
 
     // Checks collision and updates movement
@@ -86,7 +95,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }   */
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        Vector2 targetVelocity = new(moveDir.x * speed, moveDir.y * speed);
+        Vector2 targetVelocity = new(moveDir.x * _speed, moveDir.y * _speed);
         rb.velocity = targetVelocity;
 
         // Check if the moveDir is zero, indicating no input
@@ -96,31 +105,42 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D coll)
+    protected virtual void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.transform.TryGetComponent(out Entity collEntity))
         {
             if (IsAgainst(collEntity))
             {
-                ReceiveDamage(collEntity.BaseDamage);
-                //Debug.Log(this + " Damage Taken " + collEntity.BaseDamage);
+                bool isCritical = UnityEngine.Random.value < collEntity._critChance;
+                ReceiveDamage(collEntity.BaseDamage, isCritical);
             }
         }
     }
 
     public bool IsAgainst(Entity other)
     {
-        return other.team != team;
+        return other._team != _team;
     }
 
-    public virtual void ReceiveDamage(int damageAmount)
+    public virtual void ReceiveDamage(int damageAmount, bool isCritical)
     {
-        hp -= damageAmount;
-        if (hp <= 0)
+        if (isCritical)
         {
-            hp = 0;
+            damageAmount *= 2;
+            Debug.Log("crit");
+        }
+        _hp -= damageAmount;
+        if (_hp <= 0)
+        {
+            _hp = 0;
             Death();
         }
+        float spriteHeight = _entitySpriteRenderer.bounds.size.y;
+        Vector3 damagePopUpPosition = transform.position + new Vector3(0, spriteHeight / 2);
+
+        if (IsPlayerInRange())
+            PopUpSpawner.Instance.ShowDamagePopUp(damageAmount.ToString(), damagePopUpPosition, isCritical);
+
         OnHpChange();
 
         /*if (Time.time - lastDamage > damageDelay)
@@ -136,15 +156,15 @@ public abstract class Entity : MonoBehaviour, IDamageable
     }
     public void OnHpChange()
     {
-        float percentage = (float)hp / maxHp;
-        Vector3 newScale = hpBar.localScale;
+        float percentage = (float)_hp / _maxHp;
+        Vector3 newScale = _hpBar.localScale;
         if (percentage > 0)
             newScale.x = percentage;
         else newScale.x = 0;
-        hpBar.localScale = newScale;
-        if (player.targetedEntity != null)
+        _hpBar.localScale = newScale;
+        if (_player._targetedEntity != null)
         {
-            if (player.targetedEntity == this)
+            if (_player._targetedEntity == this)
             {
                 UIManager.Instance.ShowUIEntityStats(gameObject);
             }
@@ -155,9 +175,9 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         foreach (Type entityType in targetingPriority)
         {
-            foreach (Entity entity in entitiesInRange)
+            foreach (Entity entity in _entitiesInRange)
             {
-                if (entity.type == entityType)
+                if (entity._type == entityType)
                 {
                     TargetEnemy(entity);
                     return;
@@ -168,32 +188,12 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     public virtual void TargetEnemy(Entity entity)
     {
-        if (this is Player)
-        {
-            Transform target = entity.transform.Find("Target");
-            if (target != null)
-            {
-                target.gameObject.SetActive(true);
-            }
-            else Debug.LogError("Missing target object");
-        }
-        targetedEntity = entity;
-        UIManager.Instance.ShowUIEntityStats(entity.gameObject);
+        _targetedEntity = entity;
     }
 
-    public virtual void StopTargetEnemy(Entity entity)
+    public virtual void StopTargetEnemy()
     {
-        if (this is Player)
-        {
-            Transform target = entity.transform.Find("Target");
-            if (target != null)
-            {
-                target.gameObject.SetActive(false);
-            }
-            else Debug.LogError("Missing target object");
-        }
-        targetedEntity = null;
-        UIManager.Instance.HideUIEntityStats();
+        _targetedEntity = null;
     }
 
 
@@ -209,13 +209,18 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     public virtual void Death()
     {
-        Debug.Log("Dead");
+        UIManager.Instance.HideUIEntityStats();
     }
 
     public virtual void ResetHp()
     {
-        hp = maxHp;
+        _hp = _maxHp;
         OnHpChange();
     }
 
+    protected virtual bool IsPlayerInRange()
+    {
+        return _entitiesInRange.Contains(_player);
+
+    }
 }

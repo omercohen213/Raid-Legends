@@ -10,9 +10,10 @@ using UnityEngine.UI;
 public class AbilityManager : MonoBehaviour
 {
     private static AbilityManager instance;
-    [SerializeField] Player player;
-    [SerializeField] private Image basicAttackImage;
-    private float transitionDuration = 0.2f;
+    
+    private Player _player;
+    private readonly float _transitionDuration = 0.2f;
+    [SerializeField] private Image _basicAttackImage;
     public static AbilityManager Instance
     {
         get
@@ -41,6 +42,11 @@ public class AbilityManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+
+        if (!GameObject.Find("Player").TryGetComponent(out _player))
+        {
+            Debug.LogError("Missing Player object");
         }
     }
 
@@ -98,22 +104,22 @@ public class AbilityManager : MonoBehaviour
     public void BasicAttack (Ability ability)
     {
         ShowAbilityTouch();
-        player.AttackAnimation();
-        player.ShowPlayerRange(transitionDuration);
+        _player.AttackAnimation();
+        _player.ShowPlayerRange(_transitionDuration);
     }
 
     private void ShowAbilityTouch()
     {
         float shrinkScale = 0.8f;
-        basicAttackImage.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
+        _basicAttackImage.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
         StartCoroutine(ResetImage());
     }
 
     private IEnumerator ResetImage()
     {
-        yield return new WaitForSeconds(transitionDuration);
+        yield return new WaitForSeconds(_transitionDuration);
         float normalScale = 1f;
-        basicAttackImage.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
+        _basicAttackImage.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
     }
 
     public void Ability1(Ability ability)

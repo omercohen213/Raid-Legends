@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void ReceiveDamage(int damage);
+    public void ReceiveDamage(int damage, bool isCritical);
     public void Attack(Entity entity);
     void OnHpChange();
     void Death();

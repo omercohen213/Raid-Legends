@@ -4,29 +4,31 @@ using UnityEngine;
 
 public class Tower : Entity
 {
-    private float damage;
-    private float damageRampRate = 2.5f;
+    private float _damage;
+    private readonly float _initialDamageDelay = 0.5f;
+    private readonly float _damageRampRate = 1.1f;
+    private readonly float _damageRate = 0.3f; 
 
     //private TowerRange range;
-    [SerializeField] private Transform focusStartingPoint;
-    [SerializeField] private LineRenderer focusLine;
-    [SerializeField] private SpriteRenderer rangeSpriteRenderer;
-    [SerializeField] private Sprite towerRangeSafe;
-    [SerializeField] private Sprite towerRangeDanger;
+    [SerializeField] private Transform _focusStartingPoint;
+    [SerializeField] private LineRenderer _focusLine;
+    [SerializeField] private SpriteRenderer _rangeSpriteRenderer;
+    [SerializeField] private Sprite _towerRangeSafe;
+    [SerializeField] private Sprite _towerRangeDanger;
 
     protected override void Start()
     {
         base.Start();
-        focusLine.SetPosition(0, focusStartingPoint.position);
-        targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion };
+        _focusLine.SetPosition(0, _focusStartingPoint.position);
+        _targetingPriority = new List<Type> { Type.Minion, Type.Player, Type.AIPlayer };
     }
 
     private void Update()
     {
-        if (targetedEntity != null)
+        if (_targetedEntity != null)
         {
-            focusLine.SetPosition(1, targetedEntity.transform.position);
-            if (entitiesInRange.Contains(player))
+            _focusLine.SetPosition(1, _targetedEntity.transform.position);
+            if (_entitiesInRange.Contains(_player))
                 ShowRange();
         }
     }
@@ -37,49 +39,49 @@ public class Tower : Entity
         Attack(entity);
     }
 
-    public override void StopTargetEnemy(Entity entity)
+    public override void StopTargetEnemy()
     {
-        base.StopTargetEnemy(entity);
+        base.StopTargetEnemy();
         StopAttack();
     }
 
     public override void Attack(Entity entity)
     {
-        focusLine.enabled = true;
+        _focusLine.enabled = true;
         ResetDamage();
-        InvokeRepeating(nameof(DealRampingDamage), 0.5f, 0.5f);
+        InvokeRepeating(nameof(DealRampingDamage), _initialDamageDelay, _damageRate);
     }
 
     public override void StopAttack()
     {
-        focusLine.enabled = false;
-        rangeSpriteRenderer.enabled = false;
+        _focusLine.enabled = false;
+        _rangeSpriteRenderer.enabled = false;
         CancelInvoke(nameof(DealRampingDamage));
         ResetDamage();
     }
 
     public void ResetDamage()
     {
-        damage = baseDamage;
+        _damage = _baseDamage;
+        Debug.Log("Reset dmg " + _damage);
     }
 
     private void DealRampingDamage()
     {
-        damage = BaseDamage;
-        damage += damage * damageRampRate;
-        targetedEntity.ReceiveDamage((int)damage);
+        _damage *= _damageRampRate;
+        _targetedEntity.ReceiveDamage((int)_damage, false);
     }
 
     private void ShowRange()
     {
-        rangeSpriteRenderer.enabled = true;
+        _rangeSpriteRenderer.enabled = true;
         Sprite sprite;
-        if (targetedEntity is Player)
+        if (_targetedEntity is Player)
         {
-            sprite = towerRangeDanger;
+            sprite = _towerRangeDanger;
         }
-        else sprite = towerRangeSafe;
-        rangeSpriteRenderer.sprite = sprite;
+        else sprite = _towerRangeSafe;
+        _rangeSpriteRenderer.sprite = sprite;
     }
 
 }

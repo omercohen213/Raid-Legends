@@ -91,7 +91,6 @@ public class MinionSpawner : MonoBehaviour
 
     private void DestroyMinion(Minion minion)
     {
-        Debug.Log("destroy");
         Destroy(minion.gameObject);
     }
 }

@@ -9,25 +9,25 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class TouchManager : MonoBehaviour
 {
-    [SerializeField] private Player player;
-    [SerializeField] private GameObject touchPrefab;
-    private PlayerInput playerInput;
-    private InputAction screenTouchAction;
+    [SerializeField] private Player _player;
+    [SerializeField] private GameObject _touchPrefab;
+    private PlayerInput _playerInput;
+    private InputAction _screenTouchAction;
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
-        screenTouchAction = playerInput.actions.FindAction("ScreenTouch");
+        _playerInput = GetComponent<PlayerInput>();
+        _screenTouchAction = _playerInput.actions.FindAction("ScreenTouch");
     }
 
     private void OnEnable()
     {
-        screenTouchAction.performed += CheckTouchPosition;
+        _screenTouchAction.performed += CheckTouchPosition;
     }
 
     private void OnDisable()
     {
-        screenTouchAction.performed -= CheckTouchPosition;
+        _screenTouchAction.performed -= CheckTouchPosition;
     }
 
     private void Start()
@@ -49,13 +49,23 @@ public class TouchManager : MonoBehaviour
                         AbilityManager.Instance.UseAbility(coll.gameObject);
                     }
                 }
-                Collider2D worldSpcaeColl = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(touch.position.ReadValue()));
-                if (worldSpcaeColl != null)
+
+                float touchRadius = 0.5f;
+
+                Vector3 touchPosition = Camera.main.ScreenToWorldPoint(touch.position.ReadValue());
+                Collider2D[] colliders = Physics2D.OverlapCircleAll(touchPosition, touchRadius);
+
+                foreach (Collider2D collider in colliders)
                 {
-                    if (worldSpcaeColl.gameObject.CompareTag("Minion") || worldSpcaeColl.gameObject.CompareTag("AIPlayer") || worldSpcaeColl.gameObject.CompareTag("Player"))
+                    if (collider.gameObject.TryGetComponent(out Entity entityColl))
                     {
-                        player.TargetEnemy(worldSpcaeColl.gameObject.GetComponent<Entity>());
-                        UIManager.Instance.ShowUIEntityStats(worldSpcaeColl.gameObject);
+                        if (_player.IsAgainst(entityColl))
+                        {
+                            _player.StopTargetEnemy();
+                            _player.TargetEnemy(entityColl);
+                        }
+                        UIManager.Instance.ShowUIEntityStats(collider.gameObject);
+                        break;
                     }
                 }
             }
@@ -79,5 +89,9 @@ public class TouchManager : MonoBehaviour
         }
     }
 
-
+    private bool IsEntity()
+    {
+        return true;
+        //return (collider.gameObject.CompareTag("Minion") || collider.gameObject.CompareTag("AIPlayer") || collider.gameObject.CompareTag("Player"))
+    }
 }

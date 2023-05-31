@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1372531685189755853}
   - component: {fileID: 8966351510431287753}
   - component: {fileID: 1497329492622730787}
-  m_Layer: 0
-  m_Name: DamagePopup
+  m_Layer: 9
+  m_Name: PopUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,8 +76,8 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1527842077
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &1497329492622730787

@@ -18,25 +18,26 @@ public class Minion : Entity
         base.Start();
         if (EntityTeam == Team.Blue)
         {
-            moveDir = Vector2.right;
+            _moveDir = Vector2.right;
         }
         else if (EntityTeam == Team.Red)
         {
-            moveDir = Vector2.left;
+            _moveDir = Vector2.left;
         }
-        targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower};
+        _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower};
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateMovement(moveDir);
+        UpdateMovement(_moveDir);
     }
 
     public void SetPool(ObjectPool<Minion> pool) => _pool = pool;
 
     public override void Death()
     {
+        base.Death();
         gameObject.SetActive(false);
         if (_pool != null)
         {
