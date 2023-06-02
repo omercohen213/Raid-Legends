@@ -1,19 +1,19 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class AbilityManager : MonoBehaviour
 {
     private static AbilityManager instance;
-    
+
     private Player _player;
-    private readonly float _transitionDuration = 0.2f;
     [SerializeField] private Image _basicAttackImage;
+    private readonly float _showRangeDuration = 0.2f;
+    [SerializeField] private SpriteRenderer _playerRangeSpriteRenderer;
+    private List<Ability> abilities;
+
     public static AbilityManager Instance
     {
         get
@@ -50,76 +50,119 @@ public class AbilityManager : MonoBehaviour
         }
     }
 
-    public void UseAbility(GameObject gameObject)
+    private void Start()
     {
-        if (gameObject.TryGetComponent<Ability>(out var ability))
+        Ability[] abilityComponents = GetComponentsInChildren<Ability>();
+        abilities = new List<Ability>(abilityComponents);
+    }
+
+    private void Update()
+    {
+        foreach (Ability ability in abilities)
         {
-            Debug.Log(ability.abilityName);
-            MethodInfo methodInfo = GetType().GetMethod(ability.abilityName);
-            methodInfo?.Invoke(this, new object[] { ability }); // Call ability method    
+            if (ability.isCd)
+            {
+                ApplyCooldown(ability);
+            }
         }
     }
 
+    // Find ability on UI game object touch 
+    public void FindAblityOnTouch(GameObject gameObject)
+    {
+        if (gameObject.TryGetComponent<Ability>(out var ability))
+        {
+            ShowAbilityTouch(_basicAttackImage); // change
+            ShowPlayerRange(_showRangeDuration);
+            _player.TryUseAbility(ability);
+        }
+    }
+
+    // Use given ability
+    public void UseAbility(Ability ability)
+    {
+        //_player.StartMovingTowardsTarget(ability);
+        if (!ability.isCd)
+        {
+            MethodInfo methodInfo = GetType().GetMethod(ability.abilityName);
+            methodInfo?.Invoke(this, new object[] { ability }); // Call ability method    
+        }
+
+    }
+
+    // Apply ability cooldown
     private void ApplyCooldown(Ability ability)
     {
-        /*if (ability.isAnimationActive)
-        {
-            disableAllTimer -= Time.deltaTime;
-            if (disableAllTimer < 0) // Animation has ended and we can use another ability
-            {
-                ability.isAnimationActive = false;
-                disableAll = false;
-                disableAllTimer = 0;
-            }
-        }*/
-        // Reduce cd till it reaches 0 so we can use it again
         ability.cdTimer -= Time.deltaTime;
 
         // Cd is over
         if (ability.cdTimer < 0)
         {
             ability.isCd = false;
-            ability.cdTimer = 0;
-            //ability.abilityCdImage.fillAmount = 0.0f;
+            ability.cdTimer = ability.cd;
         }
-        // Still on cd
-        else
-        {
-            //ability.abilityCdImage.fillAmount = ability.cdTimer / ability.cd;
-        }
+        //ability.abilityCdImage.fillAmount = 0.0f;
+        //ability.abilityCdImage.fillAmount = ability.cdTimer / ability.cd;
     }
 
     // Disable this ability use for cd time, disable all abilties for animation time
-    private void DisableAbilityUse(Ability ability)
+    /* private void DisableAbilityUse(Ability ability)
+     {
+         // To avoid using 2 abilities at the same time     
+         ability.isAnimationActive = true;
+         disableAllTimer = ability.animationTime;
+         disableAll = true;
+         ability.isCd = true;
+         ability.cdTimer = ability.cd;
+     }*/
+
+
+    public void BasicAttack(Ability ability)
     {
-        // To avoid using 2 abilities at the same time     
-        /*        ability.isAnimationActive = true;
-                disableAllTimer = ability.animationTime;
-                disableAll = true;*/
+        BasicAttackAnimation(ability);
+        bool isCritical = Random.value < _player.CritChance;
+        _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, true);
         ability.isCd = true;
-        ability.cdTimer = ability.cd;
     }
 
-        
-    public void BasicAttack (Ability ability)
+    // Basic attack animation
+    public void BasicAttackAnimation(Ability ability)
     {
-        ShowAbilityTouch();
-        _player.AttackAnimation();
-        _player.ShowPlayerRange(_transitionDuration);
+        // check if animation in progress
+        _player.Anim.SetBool("Attack", true);
+        StartCoroutine(AttackAnimationCancel(ability));
     }
 
-    private void ShowAbilityTouch()
+    private IEnumerator AttackAnimationCancel(Ability ability)
+    {
+        yield return new WaitForSeconds(ability.animationTime);
+        _player.Anim.SetBool("Attack", false);
+    }
+
+    public void ShowPlayerRange(float timeBeforeHide)
+    {
+        _playerRangeSpriteRenderer.enabled = true;
+        StartCoroutine(HideRange(timeBeforeHide));
+    }
+    private IEnumerator HideRange(float timeBeforeHide)
+    {
+        yield return new WaitForSeconds(timeBeforeHide);
+        _playerRangeSpriteRenderer.enabled = false;
+    }
+
+
+    private void ShowAbilityTouch(Image image)
     {
         float shrinkScale = 0.8f;
-        _basicAttackImage.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
-        StartCoroutine(ResetImage());
+        image.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
+        StartCoroutine(ResetImage(image));
     }
 
-    private IEnumerator ResetImage()
+    private IEnumerator ResetImage(Image image)
     {
-        yield return new WaitForSeconds(_transitionDuration);
+        yield return new WaitForSeconds(_showRangeDuration);
         float normalScale = 1f;
-        _basicAttackImage.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
+        image.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
     }
 
     public void Ability1(Ability ability)
@@ -138,5 +181,5 @@ public class AbilityManager : MonoBehaviour
         Debug.Log("ability3");
     }
 
-    
+
 }

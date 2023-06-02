@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void ReceiveDamage(int damage, bool isCritical);
-    public void Attack(Entity entity);
+    public void ReceiveDamage(int damage, bool isCritical, bool isDamageFromPlayer);
+    public void Attack();
     void OnHpChange();
     void Death();
     //bool IsDamageToKill(float damage);

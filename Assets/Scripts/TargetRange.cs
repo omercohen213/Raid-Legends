@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangeCollider : MonoBehaviour
+public class TargetRange : MonoBehaviour
 {
     private Entity _ownerEntity;
 
@@ -21,11 +21,10 @@ public class RangeCollider : MonoBehaviour
         {
             if (_ownerEntity.IsAgainst(otherEntity))
             {
-                _ownerEntity.EntitiesInRange.Add(otherEntity);
+                _ownerEntity.EntitiesInTargetRange.Add(otherEntity);
 
-                // If there is no currently targeted entity, focus on the first entity in range
-                // (Player targets enemies with touch or abilities)
-                if (_ownerEntity.TargetedEntity == null && _ownerEntity is not Player)
+                // If there is no currently targeted entity, target enemy in range
+                if (_ownerEntity.TargetedEntity == null)
                 {
                     _ownerEntity.TargetEnemy(otherEntity);
                 }
@@ -38,15 +37,15 @@ public class RangeCollider : MonoBehaviour
         if (otherCollider.CompareTag("Minion") || otherCollider.CompareTag("Player") || otherCollider.CompareTag("AIPlayer") || otherCollider.CompareTag("Tower"))
         {
             Entity entity = otherCollider.GetComponent<Entity>();
-            _ownerEntity.EntitiesInRange.Remove(entity);
+            _ownerEntity.EntitiesInTargetRange.Remove(entity);
 
-            // If the targeted entity leaves the range, switch focus to the next entity
+            // If the targeted entity leaves the range, switch target to the next enemy in range
             if (_ownerEntity.TargetedEntity != null)
             {
                 if (_ownerEntity.TargetedEntity.transform == otherCollider.transform)
                 {
                     _ownerEntity.StopTargetEnemy();
-                    _ownerEntity.FindNewTarget(_ownerEntity.TargetingPriority);
+                    _ownerEntity.FindPriotityTarget(_ownerEntity.EntitiesInTargetRange);
                 }
             }
         }

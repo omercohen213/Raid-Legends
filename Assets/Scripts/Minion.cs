@@ -16,6 +16,7 @@ public class Minion : Entity
     protected override void Start()
     {
         base.Start();
+        _movementSpeed = 2f;
         if (EntityTeam == Team.Blue)
         {
             _moveDir = Vector2.right;
@@ -24,7 +25,7 @@ public class Minion : Entity
         {
             _moveDir = Vector2.left;
         }
-        _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower};
+        _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower };
     }
 
     // Update is called once per frame

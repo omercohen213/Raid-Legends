@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -9,8 +10,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
     private SpriteRenderer _entitySpriteRenderer;
 
     // Team and type
-    [SerializeField] private Team _team;
-    [SerializeField] private Type _type;
+    [SerializeField] protected Team _team;
+    [SerializeField] protected Type _type;
 
     // Stats
     protected int _hp;
@@ -20,13 +21,14 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     // Movement
     protected Vector3 _moveDir;
-    [SerializeField] protected float _speed;
+    [SerializeField] protected float _movementSpeed;
     [SerializeField] Transform _hpBar;
 
     // Targeting
     protected Entity _targetedEntity;
-    protected List<Entity> _entitiesInRange;
-    protected List<Type> _targetingPriority;
+    protected List<Entity> _entitiesInTargetRange; // To determine if enemy entity can be targeted
+    protected List<Entity> _entitiesInAttackRange; // To determine if entity can attack enemy entity in target range
+    protected List<Type> _targetingPriority; // Ordered list of targeting pririty
 
     // Damage
     protected float _critChance;
@@ -41,8 +43,11 @@ public abstract class Entity : MonoBehaviour, IDamageable
     public int MaxHp { get => _maxHp; set => _maxHp = value; }
     public int BaseDamage { get => _baseDamage; set => _baseDamage = value; }
     public Entity TargetedEntity { get => _targetedEntity; set => _targetedEntity = value; }
-    public List<Entity> EntitiesInRange { get => _entitiesInRange; set => _entitiesInRange = value; }
+    public List<Entity> EntitiesInTargetRange { get => _entitiesInTargetRange; set => _entitiesInTargetRange = value; }
+    public List<Entity> EntitiesInAttackRange { get => _entitiesInAttackRange; set => _entitiesInAttackRange = value; }
+
     public List<Type> TargetingPriority { get => _targetingPriority; set => _targetingPriority = value; }
+    public float CritChance { get => _critChance; }
 
     protected virtual void Awake()
     {
@@ -61,7 +66,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         _hp = _maxHp;
         _targetedEntity = null;
-        _entitiesInRange = new List<Entity>();
+        _entitiesInTargetRange = new List<Entity>();
+        _entitiesInAttackRange = new List<Entity>();
     }
 
     // Checks collision and updates movement
@@ -95,8 +101,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }   */
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        Vector2 targetVelocity = new(moveDir.x * _speed, moveDir.y * _speed);
-        rb.velocity = targetVelocity;
+        Vector2 velocity = new(moveDir.x * _movementSpeed, moveDir.y * _movementSpeed);
+        rb.velocity = velocity;
 
         // Check if the moveDir is zero, indicating no input
         if (moveDir == Vector3.zero)
@@ -105,30 +111,16 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    protected virtual void OnCollisionEnter2D(Collision2D coll)
-    {
-        if (coll.transform.TryGetComponent(out Entity collEntity))
-        {
-            if (IsAgainst(collEntity))
-            {
-                bool isCritical = UnityEngine.Random.value < collEntity._critChance;
-                ReceiveDamage(collEntity.BaseDamage, isCritical);
-            }
-        }
-    }
-
     public bool IsAgainst(Entity other)
     {
         return other._team != _team;
     }
 
-    public virtual void ReceiveDamage(int damageAmount, bool isCritical)
+    public virtual void ReceiveDamage(int damageAmount, bool isCritical, bool isDamageFromPlayer)
     {
         if (isCritical)
-        {
             damageAmount *= 2;
-            Debug.Log("crit");
-        }
+
         _hp -= damageAmount;
         if (_hp <= 0)
         {
@@ -138,21 +130,10 @@ public abstract class Entity : MonoBehaviour, IDamageable
         float spriteHeight = _entitySpriteRenderer.bounds.size.y;
         Vector3 damagePopUpPosition = transform.position + new Vector3(0, spriteHeight / 2);
 
-        if (IsPlayerInRange())
+        if (this is Player || isDamageFromPlayer)
             PopUpSpawner.Instance.ShowDamagePopUp(damageAmount.ToString(), damagePopUpPosition, isCritical);
 
         OnHpChange();
-
-        /*if (Time.time - lastDamage > damageDelay)
-        {
-            lastDamage = Time.time;
-            if (damageAmount > 0)
-            {
-                hp -= damageAmount;
-                //FloatingTextManager.instance.ShowFloatingText(damageAmount.ToString(), 30, new Color(0.98f, 0.37f, 0), origin, "Hit", 2.0f);
-            }
-            //else FloatingTextManager.instance.ShowFloatingText("0", 30, new Color(0.98f, 0.37f, 0), origin, "Hit", 2.0f);
-        */
     }
     public void OnHpChange()
     {
@@ -171,19 +152,9 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    public virtual void FindNewTarget(List<Type> targetingPriority)
+    public virtual void Attack()
     {
-        foreach (Type entityType in targetingPriority)
-        {
-            foreach (Entity entity in _entitiesInRange)
-            {
-                if (entity._type == entityType)
-                {
-                    TargetEnemy(entity);
-                    return;
-                }
-            }
-        }
+        Debug.Log("Attack");
     }
 
     public virtual void TargetEnemy(Entity entity)
@@ -196,15 +167,44 @@ public abstract class Entity : MonoBehaviour, IDamageable
         _targetedEntity = null;
     }
 
-
-    public virtual void Attack(Entity entity)
+    // Try to find a target in range. Prioritize targets according to targeting priority
+    public virtual Entity FindPriotityTarget(List<Entity> entitiesInRange)
     {
-        Debug.Log("Attack");
+        foreach (Type entityType in _targetingPriority)
+        {
+            Entity closestEntity = FindClosestEntity(entitiesInRange, entityType);
+            if (closestEntity != null)
+            {
+                if (entitiesInRange.Contains(closestEntity))
+                {
+                    TargetEnemy(closestEntity);                  
+                    return closestEntity;
+                }
+            }
+        }
+        return null;
     }
 
-    public virtual void StopAttack()
+    // Try to find closest entity in range
+    protected Entity FindClosestEntity(List<Entity> entitiesInRange, Type entityType)
     {
-        Debug.Log("Stopping Attack");
+        Entity closestEntity = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Entity entity in entitiesInRange)
+        {
+            if (entity._type == entityType)
+            {
+                float distance = Vector3.Distance(entity.transform.position, transform.position);
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestEntity = entity;
+                }
+            }
+        }
+        return closestEntity;
     }
 
     public virtual void Death()
@@ -216,11 +216,5 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         _hp = _maxHp;
         OnHpChange();
-    }
-
-    protected virtual bool IsPlayerInRange()
-    {
-        return _entitiesInRange.Contains(_player);
-
     }
 }

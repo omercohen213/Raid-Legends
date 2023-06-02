@@ -24,6 +24,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1044911307599213166, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: _team
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1044911307599213166, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: targetPos.x
       value: 0.25
       objectReference: {fileID: 0}

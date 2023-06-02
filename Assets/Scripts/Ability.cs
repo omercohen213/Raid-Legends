@@ -8,8 +8,8 @@ public class Ability: MonoBehaviour
     public float cd;
     public float cdTimer = 0;
     public bool isCd = false;
+    public float range;
     public float animationTime;
     public bool isAnimationActive = false;
     public Image abilityCdImage;
-    public Text abilityCdText;
 }

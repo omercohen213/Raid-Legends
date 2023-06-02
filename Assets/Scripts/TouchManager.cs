@@ -46,7 +46,7 @@ public class TouchManager : MonoBehaviour
                 {
                     if (coll.gameObject.CompareTag("AbilityUI"))
                     {
-                        AbilityManager.Instance.UseAbility(coll.gameObject);
+                        AbilityManager.Instance.FindAblityOnTouch(coll.gameObject);
                     }
                 }
 
@@ -61,7 +61,6 @@ public class TouchManager : MonoBehaviour
                     {
                         if (_player.IsAgainst(entityColl))
                         {
-                            _player.StopTargetEnemy();
                             _player.TargetEnemy(entityColl);
                         }
                         UIManager.Instance.ShowUIEntityStats(collider.gameObject);
