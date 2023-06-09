@@ -75,7 +75,7 @@ public class AbilityManager : MonoBehaviour
     {
         if (gameObject.TryGetComponent<Ability>(out var ability))
         {
-            ShowAbilityTouch(ability.abilityImage);          
+            ShowAbilityTouch(ability);          
             _player.TryUseAbility(ability);
         }
     }
@@ -102,9 +102,15 @@ public class AbilityManager : MonoBehaviour
         {
             ability.isCd = false;
             ability.cdTimer = ability.cd;
+            //ability.abilityCdText.gameObject.SetActive(false);
+            ability.abilityCdImage.fillAmount = 0.0f;
         }
-        //ability.abilityCdImage.fillAmount = 0.0f;
-        //ability.abilityCdImage.fillAmount = ability.cdTimer / ability.cd;
+        // Still on cd
+        else
+        {
+            //ability.abilityCdText.text = Mathf.RoundToInt(ability.cdTimer).ToString();
+            ability.abilityCdImage.fillAmount = ability.cdTimer / ability.cd;
+        }
     }
 
     // Disable this ability use for cd time, disable all abilties for animation time
@@ -161,19 +167,20 @@ public class AbilityManager : MonoBehaviour
         _playerRangeSpriteRenderer.enabled = false;
     }
 
-
-    private void ShowAbilityTouch(Image image)
+    private void ShowAbilityTouch(Ability ability)
     {
         float shrinkScale = 0.8f;
-        image.transform.localScale = new Vector3(shrinkScale, shrinkScale);
-        StartCoroutine(ResetImage(image));
+        ability.abilityImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
+        ability.abilityCdImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
+        StartCoroutine(ResetImage(ability));
     }
 
-    private IEnumerator ResetImage(Image image)
+    private IEnumerator ResetImage(Ability ability)
     {
         yield return new WaitForSeconds(_showRangeDuration);
         float normalScale = 1f;
-        image.transform.localScale = new Vector3(normalScale, normalScale, 1f);
+        ability.abilityImage.transform.localScale = new Vector3(normalScale, normalScale);
+        ability.abilityCdImage.transform.localScale = new Vector3(normalScale, normalScale);
     }
 
     public void Ability1(Ability ability)
