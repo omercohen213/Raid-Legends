@@ -11,5 +11,6 @@ public class Ability: MonoBehaviour
     public float range;
     public float animationTime;
     public bool isAnimationActive = false;
+    public Image abilityImage;
     public Image abilityCdImage;
 }

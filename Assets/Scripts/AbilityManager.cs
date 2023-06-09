@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class AbilityManager : MonoBehaviour
     [SerializeField] private Image _basicAttackImage;
     private readonly float _showRangeDuration = 0.2f;
     [SerializeField] private SpriteRenderer _playerRangeSpriteRenderer;
+    [SerializeField] private Animator _anim;
+    [SerializeField] private GameObject ice;
     private List<Ability> abilities;
 
     public static AbilityManager Instance
@@ -72,8 +75,7 @@ public class AbilityManager : MonoBehaviour
     {
         if (gameObject.TryGetComponent<Ability>(out var ability))
         {
-            ShowAbilityTouch(_basicAttackImage); // change
-            ShowPlayerRange(_showRangeDuration);
+            ShowAbilityTouch(ability.abilityImage);          
             _player.TryUseAbility(ability);
         }
     }
@@ -120,8 +122,17 @@ public class AbilityManager : MonoBehaviour
     public void BasicAttack(Ability ability)
     {
         BasicAttackAnimation(ability);
+        ShowPlayerRange(_showRangeDuration);
         bool isCritical = Random.value < _player.CritChance;
         _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, true);
+        ability.isCd = true;
+    }
+
+    public void Ability3 (Ability ability)
+    {
+        ice.transform.position = _player.TargetedEntity.transform.position;
+        _anim.SetTrigger("Ability3");
+        _player.TargetedEntity.ReceiveDamage(_player.BaseDamage * 5, false, true);
         ability.isCd = true;
     }
 
@@ -130,10 +141,10 @@ public class AbilityManager : MonoBehaviour
     {
         // check if animation in progress
         _player.Anim.SetBool("Attack", true);
-        StartCoroutine(AttackAnimationCancel(ability));
+        StartCoroutine(BasicAttackAnimationCancel(ability));
     }
 
-    private IEnumerator AttackAnimationCancel(Ability ability)
+    private IEnumerator BasicAttackAnimationCancel(Ability ability)
     {
         yield return new WaitForSeconds(ability.animationTime);
         _player.Anim.SetBool("Attack", false);
@@ -154,7 +165,7 @@ public class AbilityManager : MonoBehaviour
     private void ShowAbilityTouch(Image image)
     {
         float shrinkScale = 0.8f;
-        image.transform.localScale = new Vector3(-shrinkScale, shrinkScale, 1f);
+        image.transform.localScale = new Vector3(shrinkScale, shrinkScale);
         StartCoroutine(ResetImage(image));
     }
 
@@ -162,7 +173,7 @@ public class AbilityManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_showRangeDuration);
         float normalScale = 1f;
-        image.transform.localScale = new Vector3(-normalScale, normalScale, 1f);
+        image.transform.localScale = new Vector3(normalScale, normalScale, 1f);
     }
 
     public void Ability1(Ability ability)
@@ -175,11 +186,4 @@ public class AbilityManager : MonoBehaviour
     {
         Debug.Log("ability2");
     }
-
-    public void Ability3(Ability ability)
-    {
-        Debug.Log("ability3");
-    }
-
-
 }

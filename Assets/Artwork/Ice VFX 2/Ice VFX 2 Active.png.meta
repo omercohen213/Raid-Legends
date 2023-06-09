@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4d301a0f298f46e46971104c31cd892f
+guid: 1770c9474f5e29244ab60afc220e2468
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,85 +117,169 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: abilities_0
+      name: Ice VFX 2 Active_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 273
-        width: 64
-        height: 64
+        x: 0
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e922955f1845ecc4e8a644d7fd6a7060
-      internalID: 194239118
+      spriteID: 73f210d77e4c6fc4c971e32e9c4040d7
+      internalID: 1140095593
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: abilities_1
+      name: Ice VFX 2 Active_1
       rect:
         serializedVersion: 2
-        x: 496
-        y: 38
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.4861021, y: 0.50000036}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b00008e4744fd5144ba482c142f10b8b
-      internalID: 575021640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_2
-      rect:
-        serializedVersion: 2
-        x: 27
-        y: 194
-        width: 64
-        height: 64
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3301b3ee2bee38142b1a51abad3f1834
-      internalID: -739472787
+      spriteID: 126e8ecd85257f348962c89c632565a0
+      internalID: -1839425181
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: abilities_3
+      name: Ice VFX 2 Active_2
       rect:
         serializedVersion: 2
-        x: 182
-        y: 195
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e2279bdc4d3d8b2439c8df8a5e3b28f3
-      internalID: -1037286640
+      spriteID: f1670cbeca3fb8940a649dfb385566b4
+      internalID: 886279028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ice VFX 2 Active_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08b0f886d8643f9468d524baccc8bc36
+      internalID: 1958011311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ice VFX 2 Active_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71145dd96f861af44afc1f5a9c85e145
+      internalID: 1547769520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ice VFX 2 Active_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c023cbb6e8299a40ac606f2703b54c1
+      internalID: 1084379215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ice VFX 2 Active_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 522753b8e5521b24abd3ed2939834935
+      internalID: -965152922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Ice VFX 2 Active_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef1e6ba17859fbb48a70b6159ae085ba
+      internalID: -1978397400
       vertices: []
       indices: 
       edges: []
@@ -211,10 +295,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      abilities_0: 194239118
-      abilities_1: 575021640
-      abilities_2: -739472787
-      abilities_3: -1037286640
+      Ice VFX 2 Active_0: 1140095593
+      Ice VFX 2 Active_1: -1839425181
+      Ice VFX 2 Active_2: 886279028
+      Ice VFX 2 Active_3: 1958011311
+      Ice VFX 2 Active_4: 1547769520
+      Ice VFX 2 Active_5: 1084379215
+      Ice VFX 2 Active_6: -965152922
+      Ice VFX 2 Active_7: -1978397400
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

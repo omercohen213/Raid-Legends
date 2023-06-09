@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4d301a0f298f46e46971104c31cd892f
+guid: 5fb22aa42309ff4449c7867a8577535d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -42,7 +42,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -115,91 +115,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: abilities_0
-      rect:
-        serializedVersion: 2
-        x: 28
-        y: 273
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e922955f1845ecc4e8a644d7fd6a7060
-      internalID: 194239118
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_1
-      rect:
-        serializedVersion: 2
-        x: 496
-        y: 38
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.4861021, y: 0.50000036}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b00008e4744fd5144ba482c142f10b8b
-      internalID: 575021640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_2
-      rect:
-        serializedVersion: 2
-        x: 27
-        y: 194
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3301b3ee2bee38142b1a51abad3f1834
-      internalID: -739472787
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_3
-      rect:
-        serializedVersion: 2
-        x: 182
-        y: 195
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e2279bdc4d3d8b2439c8df8a5e3b28f3
-      internalID: -1037286640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
@@ -210,11 +126,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      abilities_0: 194239118
-      abilities_1: 575021640
-      abilities_2: -739472787
-      abilities_3: -1037286640
+    nameFileIdTable: {}
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

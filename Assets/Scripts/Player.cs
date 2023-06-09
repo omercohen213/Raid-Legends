@@ -130,21 +130,35 @@ public class Player : Entity
     {
         if (_targetedEntity != null)
         {
-            _movingTowardsTarget = true;
             _currentAbilty = ability;
             _attackRange.radius = _currentAbilty.range;
+            if (EntitiesInAttackRange.Contains(_targetedEntity))
+            {
+                AbilityManager.Instance.UseAbility(_currentAbilty);
+            }
+            else
+            {
+                _movingTowardsTarget = true;
+            }
         }
         else
         {
             Entity priorityTarget = FindPriotityTarget(_entitiesInTargetRange);
             if (priorityTarget != null)
             {
-                _targetedEntity = priorityTarget;
-                _movingTowardsTarget = true;
                 _currentAbilty = ability;
                 _attackRange.radius = _currentAbilty.range;
+                _targetedEntity = priorityTarget;
+                if (EntitiesInAttackRange.Contains(_targetedEntity))
+                {
+                    AbilityManager.Instance.UseAbility(_currentAbilty);
+                }
+                else
+                {
+                    _movingTowardsTarget = true;
+                }
             }
-        }        
+        }
     }
 
     // On ability use, move towards targeted entity and then use the ability upon reaching the maximum range
@@ -164,16 +178,11 @@ public class Player : Entity
             transform.Translate(movement);
         }
 
-        // Reached range, now check if targeted entity is inside ablity range
+        // Reached range
         else
         {
-            /*if (_entitiesInAttackRange.Contains(_targetedEntity))
-            {
-
-            }
-            else _movingTowardsTarget = true;*/
-            AbilityManager.Instance.UseAbility(_currentAbilty);
             _movingTowardsTarget = false;
+            AbilityManager.Instance.UseAbility(_currentAbilty);
         }
     }
 
