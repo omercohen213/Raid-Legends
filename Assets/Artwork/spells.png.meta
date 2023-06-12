@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4d301a0f298f46e46971104c31cd892f
+guid: bd439ae885c0a5347a28dfcb0c903e80
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: abilities_0
+      name: spells_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 273
-        width: 64
-        height: 64
+        x: 307
+        y: 119
+        width: 165
+        height: 165
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,125 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e922955f1845ecc4e8a644d7fd6a7060
-      internalID: 194239118
+      spriteID: 9840e073061573c4cbc539d917b34ba5
+      internalID: -1451568712
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: abilities_1
+      name: spells_1
       rect:
         serializedVersion: 2
-        x: 496
-        y: 38
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.4861021, y: 0.50000036}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b00008e4744fd5144ba482c142f10b8b
-      internalID: 575021640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_2
-      rect:
-        serializedVersion: 2
-        x: 27
-        y: 194
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3301b3ee2bee38142b1a51abad3f1834
-      internalID: -739472787
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_3
-      rect:
-        serializedVersion: 2
-        x: 182
-        y: 195
-        width: 64
-        height: 64
-      alignment: 9
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e2279bdc4d3d8b2439c8df8a5e3b28f3
-      internalID: -1037286640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_4
-      rect:
-        serializedVersion: 2
-        x: 262
-        y: 117
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ba9417510c6f8fb4db437d334c8716e9
-      internalID: 1319009346
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_5
-      rect:
-        serializedVersion: 2
-        x: 575
-        y: 38
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6fe718e497eb5774ab4bcec710997025
-      internalID: 853555308
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: abilities_6
-      rect:
-        serializedVersion: 2
-        x: 262
-        y: 274
-        width: 64
-        height: 64
+        x: 555
+        y: 116
+        width: 165
+        height: 165
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,8 +152,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef0c6eb000d5b8b40b996064d24d10af
-      internalID: -1588576341
+      spriteID: 17fe15857fa0a8243bd3109863484d33
+      internalID: 314054027
       vertices: []
       indices: 
       edges: []
@@ -274,13 +169,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      abilities_0: 194239118
-      abilities_1: 575021640
-      abilities_2: -739472787
-      abilities_3: -1037286640
-      abilities_4: 1319009346
-      abilities_5: 853555308
-      abilities_6: -1588576341
+      spells_0: -1451568712
+      spells_1: 314054027
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Reflection;
+using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +14,9 @@ public class AbilityManager : MonoBehaviour
     private Player _player;
     [SerializeField] private Image _basicAttackImage;
     private readonly float _showRangeDuration = 0.2f;
-    [SerializeField] private SpriteRenderer _playerRangeSpriteRenderer;
     [SerializeField] private Animator _anim;
     [SerializeField] private GameObject ice;
+    [SerializeField] private GameObject _empoweredMinionPrefab; 
     private List<Ability> abilities;
 
     public static AbilityManager Instance
@@ -70,26 +72,16 @@ public class AbilityManager : MonoBehaviour
         }
     }
 
-    // Find ability on UI game object touch 
-    public void FindAblityOnTouch(GameObject gameObject)
-    {
-        if (gameObject.TryGetComponent<Ability>(out var ability))
-        {
-            ShowAbilityTouch(ability);          
-            _player.TryUseAbility(ability);
-        }
-    }
-
     // Use given ability
-    public void UseAbility(Ability ability)
+    public void UseAbility(Ability ability, Vector3 abilityPosition)
     {
         //_player.StartMovingTowardsTarget(ability);
         if (!ability.isCd)
         {
             MethodInfo methodInfo = GetType().GetMethod(ability.abilityName);
-            methodInfo?.Invoke(this, new object[] { ability }); // Call ability method    
+            methodInfo?.Invoke(this, new object[] { ability, abilityPosition }); // Call ability method    
+            ability.isCd = true;
         }
-
     }
 
     // Apply ability cooldown
@@ -125,21 +117,20 @@ public class AbilityManager : MonoBehaviour
      }*/
 
 
-    public void BasicAttack(Ability ability)
+    public void BasicAttack(Ability ability, Vector3 abilityPosition)
     {
         BasicAttackAnimation(ability);
-        ShowPlayerRange(_showRangeDuration);
+        _player.ShowPlayerRange(_showRangeDuration);
         bool isCritical = Random.value < _player.CritChance;
         _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, true);
-        ability.isCd = true;
     }
 
-    public void Ability3 (Ability ability)
+    public void Ability3 (Ability ability , Vector3 abilityPosition)
     {
-        ice.transform.position = _player.TargetedEntity.transform.position;
+        ice.transform.position = abilityPosition;
         _anim.SetTrigger("Ability3");
-        _player.TargetedEntity.ReceiveDamage(_player.BaseDamage * 5, false, true);
-        ability.isCd = true;
+        int abilityDamage = Mathf.RoundToInt(ability.baseDamage + ability.level * ability.baseDamage * ability.damageScaling);
+        _player.TargetedEntity.ReceiveDamage(abilityDamage, false, true);
     }
 
     // Basic attack animation
@@ -156,41 +147,58 @@ public class AbilityManager : MonoBehaviour
         _player.Anim.SetBool("Attack", false);
     }
 
-    public void ShowPlayerRange(float timeBeforeHide)
-    {
-        _playerRangeSpriteRenderer.enabled = true;
-        StartCoroutine(HideRange(timeBeforeHide));
-    }
-    private IEnumerator HideRange(float timeBeforeHide)
-    {
-        yield return new WaitForSeconds(timeBeforeHide);
-        _playerRangeSpriteRenderer.enabled = false;
-    }
-
-    private void ShowAbilityTouch(Ability ability)
-    {
-        float shrinkScale = 0.8f;
-        ability.abilityImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
-        ability.abilityCdImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
-        StartCoroutine(ResetImage(ability));
-    }
-
-    private IEnumerator ResetImage(Ability ability)
-    {
-        yield return new WaitForSeconds(_showRangeDuration);
-        float normalScale = 1f;
-        ability.abilityImage.transform.localScale = new Vector3(normalScale, normalScale);
-        ability.abilityCdImage.transform.localScale = new Vector3(normalScale, normalScale);
-    }
-
-    public void Ability1(Ability ability)
+    public void Ability1(Ability ability, Vector3 abilityPosition)
     {
         Debug.Log("ability1");
 
     }
 
-    public void Ability2(Ability ability)
+    public void Ability2(Ability ability, Vector3 abilityPosition)
     {
-        Debug.Log("ability2");
+        GameObject empMinionGo = Instantiate(_empoweredMinionPrefab, abilityPosition, Quaternion.identity);
+        Minion empMinion = empMinionGo.GetComponent<Minion>();
+    }
+
+    // Show touch on ability image
+    public void ShrinkAbilityImage(Ability ability)
+    {
+        float shrinkScale = 0.8f;
+        ability.abilityImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
+        Color abilityImageColor = ability.abilityImage.color;
+        abilityImageColor.a = 150f;
+        ability.abilityImage.color = abilityImageColor;
+
+        ability.abilityCdImage.transform.localScale = new Vector3(shrinkScale, shrinkScale);
+        Color cdImagecolor = ability.abilityCdImage.color;
+        cdImagecolor.a = 150f;
+        ability.abilityCdImage.color = cdImagecolor;
+    }
+
+    // Show normal ability image
+    public void ResetAbilityImage(Ability ability)
+    {
+        float normalScale = 1f;
+        ability.abilityImage.transform.localScale = new Vector3(normalScale, normalScale);
+        Color abilityImageColor = ability.abilityImage.color;
+        abilityImageColor.a = 255f;
+        ability.abilityImage.color = abilityImageColor;
+
+        ability.abilityCdImage.transform.localScale = new Vector3(normalScale, normalScale);
+        Color cdImagecolor = ability.abilityCdImage.color;
+        cdImagecolor.a = 255f;
+        ability.abilityCdImage.color = cdImagecolor;
+    }
+
+    // Shrink image for transitionDuration and then show normal image
+    public void ShrinkAbilityImage(Ability ability, float transitionDuration)
+    {
+        ShrinkAbilityImage(ability);
+        StartCoroutine(ResetAbilityImage(ability, transitionDuration));
+
+    }
+    private IEnumerator ResetAbilityImage(Ability ability, float transitionDuration)
+    {
+        yield return new WaitForSeconds(transitionDuration);
+        ResetAbilityImage(ability);
     }
 }

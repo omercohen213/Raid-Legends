@@ -895,7 +895,7 @@ GameObject:
   - component: {fileID: 1020312579182151852}
   - component: {fileID: 8198596616588531874}
   - component: {fileID: 5580482399163403220}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Tower
   m_TagString: Tower
   m_Icon: {fileID: 0}

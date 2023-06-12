@@ -34,4 +34,6 @@ public class AttackRange : MonoBehaviour
             _ownerEntity.EntitiesInAttackRange.Remove(entity);
         }
     }
+
+    
 }

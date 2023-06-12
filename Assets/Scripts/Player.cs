@@ -13,13 +13,21 @@ public class Player : Entity
     private readonly float _barsScale = 0.35f;
     private readonly float _joystickMinInput = 0.25f;
 
+
     // Abilities
     [SerializeField] private Animator _anim;
     [SerializeField] private CircleCollider2D _attackRange;
+    [SerializeField] private CircleCollider2D _targetRange;
+    [SerializeField] private LineRenderer _rangeLineRenderer;
+    private bool _isShowingRange;
+    private Vector3 _rangeOffset;
+    //[SerializeField] private SpriteRenderer _rangeSpriteRenderer;
     private bool _movingTowardsTarget = false;
     private Ability _currentAbilty;
     private Entity _lastTargetedEntity;
+
     public Animator Anim { get => _anim; set => _anim = value; }
+    public CircleCollider2D AttackRange { get => _attackRange; set => _attackRange = value; }
 
     protected override void Start()
     {
@@ -36,6 +44,7 @@ public class Player : Entity
 
         Vector3 currentPlayerScale = transform.localScale;
         Vector3 currentBarsScale = _bars.transform.localScale;
+
         // Move only if joystick input exceeds the minimum input threshold
         if (Mathf.Abs(horizontalInput) > _joystickMinInput || Mathf.Abs(verticalInput) > _joystickMinInput)
         {
@@ -47,6 +56,7 @@ public class Player : Entity
             {
                 currentPlayerScale.x = 1f;
                 currentBarsScale.x = _barsScale;
+
             }
             else if (horizontalInput < -_joystickMinInput)
             {
@@ -87,6 +97,12 @@ public class Player : Entity
             MoveTowardsTarget();
             Walk();
         }
+
+        if (_isShowingRange)
+        {
+            _rangeOffset = new Vector3(0.17f, -0.34f);
+            DrawRange();
+        }
     }
 
     // Target given entity and show target sprite
@@ -126,36 +142,53 @@ public class Player : Entity
 
     // On ability use, start moving towards target.
     // If there is no targeted entity, try to find one in target range
-    public void TryUseAbility(Ability ability)
+    public void TryUseAbility(Ability ability, Vector3 abilityPosition)
     {
-        if (_targetedEntity != null)
+        _currentAbilty = ability;
+        if (!ability.isTargetNeeded)
         {
-            _currentAbilty = ability;
-            _attackRange.radius = _currentAbilty.range;
-            if (EntitiesInAttackRange.Contains(_targetedEntity))
-            {
-                AbilityManager.Instance.UseAbility(_currentAbilty);
-            }
-            else
-            {
-                _movingTowardsTarget = true;
-            }
+            AbilityManager.Instance.UseAbility(_currentAbilty, abilityPosition);
         }
+
         else
         {
-            Entity priorityTarget = FindPriotityTarget(_entitiesInTargetRange);
-            if (priorityTarget != null)
+            if (_targetedEntity != null)
             {
-                _currentAbilty = ability;
                 _attackRange.radius = _currentAbilty.range;
-                _targetedEntity = priorityTarget;
                 if (EntitiesInAttackRange.Contains(_targetedEntity))
                 {
-                    AbilityManager.Instance.UseAbility(_currentAbilty);
+                    AbilityManager.Instance.UseAbility(_currentAbilty, _targetedEntity.transform.position);
                 }
                 else
                 {
                     _movingTowardsTarget = true;
+                }
+            }
+            else
+            {
+                Entity priorityTarget;
+                if (_attackRange.radius > _targetRange.radius)
+                {
+                    priorityTarget = FindPriotityTarget(_entitiesInAttackRange);
+                }
+                else
+                {
+                    priorityTarget = FindPriotityTarget(_entitiesInTargetRange);
+                }
+
+                if (priorityTarget != null)
+                {
+                    _currentAbilty = ability;
+                    _attackRange.radius = _currentAbilty.range;
+                    _targetedEntity = priorityTarget;
+                    if (EntitiesInAttackRange.Contains(_targetedEntity))
+                    {
+                        AbilityManager.Instance.UseAbility(_currentAbilty, abilityPosition);
+                    }
+                    else
+                    {
+                        _movingTowardsTarget = true;
+                    }
                 }
             }
         }
@@ -182,8 +215,68 @@ public class Player : Entity
         else
         {
             _movingTowardsTarget = false;
-            AbilityManager.Instance.UseAbility(_currentAbilty);
+            AbilityManager.Instance.UseAbility(_currentAbilty, _targetedEntity.transform.position);
         }
+    }
+
+    public void DrawRange()
+    {
+        int segments = 50;
+        _rangeLineRenderer.positionCount = segments + 2;
+        _rangeLineRenderer.widthMultiplier = 0.1f;
+        _rangeLineRenderer.startColor = Color.gray;
+        _rangeLineRenderer.endColor = Color.gray;
+        Material defaultMaterial = new(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
+        _rangeLineRenderer.material = defaultMaterial;
+        _rangeLineRenderer.sortingLayerName = "HUD";
+        _rangeLineRenderer.sortingOrder = 0;
+
+        float angle = 0f;
+        float angleStep = 360f / segments;
+
+        for (int i = 0; i <= segments + 1; i++)
+        {
+            float x = Mathf.Sin(Mathf.Deg2Rad * angle) * _attackRange.radius;
+            float y = Mathf.Cos(Mathf.Deg2Rad * angle) * _attackRange.radius;
+
+            Vector3 point = new Vector3(x, y, 0f) + transform.position + _rangeOffset;
+            _rangeLineRenderer.SetPosition(i, point);
+
+            angle += angleStep;
+        }
+    }
+
+    public void UpdateAttackRange(float radius)
+    {
+        _attackRange.radius = radius;
+    }
+
+    // Show range
+    public void ShowPlayerRange()
+    {
+        _isShowingRange = true;
+        _rangeLineRenderer.enabled = true;
+    }
+
+    // Hide range
+    public void HidePlayerRange()
+    {
+        _isShowingRange = false;
+        _rangeLineRenderer.enabled = false;
+    }
+
+    // Show range for duration time and then hide
+    public void ShowPlayerRange(float duration)
+    {
+        _isShowingRange = true;
+        _rangeLineRenderer.enabled = true;
+        StartCoroutine(HidePlayerRange(duration));
+    }
+    private IEnumerator HidePlayerRange(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        _isShowingRange = false;
+        _rangeLineRenderer.enabled = false;
     }
 
     public void Dead()

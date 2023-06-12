@@ -46,7 +46,6 @@ public class Minion : Entity
         }
         else
         {
-            Debug.Log("No pool", this);
             Destroy(gameObject);
         }
     }
