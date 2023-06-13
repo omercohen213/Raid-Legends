@@ -145,19 +145,19 @@ public class Player : Entity
     public void TryUseAbility(Ability ability, Vector3 abilityPosition)
     {
         _currentAbilty = ability;
-        if (!ability.isTargetNeeded)
+        if (!ability.IsTargetNeeded)
         {
-            AbilityManager.Instance.UseAbility(_currentAbilty, abilityPosition);
+            ability.UseAbility(abilityPosition);
         }
 
         else
         {
             if (_targetedEntity != null)
             {
-                _attackRange.radius = _currentAbilty.range;
+                _attackRange.radius = _currentAbilty.Range;
                 if (EntitiesInAttackRange.Contains(_targetedEntity))
                 {
-                    AbilityManager.Instance.UseAbility(_currentAbilty, _targetedEntity.transform.position);
+                    ability.UseAbility();
                 }
                 else
                 {
@@ -179,11 +179,11 @@ public class Player : Entity
                 if (priorityTarget != null)
                 {
                     _currentAbilty = ability;
-                    _attackRange.radius = _currentAbilty.range;
+                    _attackRange.radius = _currentAbilty.Range;
                     _targetedEntity = priorityTarget;
                     if (EntitiesInAttackRange.Contains(_targetedEntity))
                     {
-                        AbilityManager.Instance.UseAbility(_currentAbilty, abilityPosition);
+                        ability.UseAbility(abilityPosition);
                     }
                     else
                     {
@@ -215,7 +215,7 @@ public class Player : Entity
         else
         {
             _movingTowardsTarget = false;
-            AbilityManager.Instance.UseAbility(_currentAbilty, _targetedEntity.transform.position);
+            _currentAbilty.UseAbility(_targetedEntity.transform.position);
         }
     }
 

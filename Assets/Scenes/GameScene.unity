@@ -5405,6 +5405,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1387810188}
+  - {fileID: 670395681}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5434,6 +5435,95 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &670395680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 670395681}
+  - component: {fileID: 670395682}
+  m_Layer: 9
+  m_Name: FireBall
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &670395681
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 659583930}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -8.98, y: 0.56}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!212 &670395682
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1527842077
+  m_SortingLayer: 2
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -347951819, guid: 7ee988b207404344d97a3453628f2239, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.64, y: 0.64}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &692477924
 GameObject:
   m_ObjectHideFlags: 0
@@ -5557,7 +5647,7 @@ GameObject:
   m_Component:
   - component: {fileID: 751425714}
   - component: {fileID: 751425715}
-  - component: {fileID: 751425716}
+  - component: {fileID: 751425717}
   m_Layer: 5
   m_Name: BasicAttack
   m_TagString: AbilityUI
@@ -5603,7 +5693,7 @@ CircleCollider2D:
   m_Offset: {x: 9.748566, y: -6.0211487}
   serializedVersion: 2
   m_Radius: 73.268005
---- !u!114 &751425716
+--- !u!114 &751425717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5612,24 +5702,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 751425713}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a525ce4611e9b154685658093e0c501b, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e2f7df5c27aad74cadec952dd3c1cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityName: BasicAttack
-  cd: 1
-  cdTimer: 1
-  isCd: 0
-  range: 2.5
-  baseDamage: 0
-  damageScaling: 0
-  level: 0
-  animationTime: 1
-  abilityImage: {fileID: 1033909413}
-  abilityCdImage: {fileID: 1583088443}
-  isOnHoldTouch: 0
+  _cd: 1
+  _cdTimer: 1
+  _isCd: 0
+  range: 5
+  _baseDamage: 10
+  _damageScaling: 2
+  _level: 1
+  _animationTime: 1
+  _abilityObject: {fileID: 0}
   isTargetNeeded: 1
   hasIndicator: 0
   indicatorPrefab: {fileID: 0}
+  _anim: {fileID: 1095764601}
 --- !u!1 &758814302
 GameObject:
   m_ObjectHideFlags: 0
@@ -5641,9 +5729,9 @@ GameObject:
   - component: {fileID: 758814303}
   - component: {fileID: 758814306}
   - component: {fileID: 758814307}
-  - component: {fileID: 758814308}
+  - component: {fileID: 758814309}
   m_Layer: 5
-  m_Name: Ability3
+  m_Name: Ice
   m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5695,7 +5783,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 42
---- !u!114 &758814308
+--- !u!114 &758814309
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5704,24 +5792,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 758814302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a525ce4611e9b154685658093e0c501b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c6f2c183bcb12e4696a5ad389a1480f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityName: Ability3
-  cd: 4
-  cdTimer: 4
-  isCd: 0
-  range: 15
-  baseDamage: 125
-  damageScaling: 1.25
-  level: 1
-  animationTime: 1
-  abilityImage: {fileID: 2094913139}
-  abilityCdImage: {fileID: 2067614645}
-  isOnHoldTouch: 0
+  _cd: 4
+  _cdTimer: 4
+  _isCd: 0
+  range: 12
+  _baseDamage: 125
+  _damageScaling: 1.15
+  _level: 1
+  _animationTime: 1
+  _abilityObject: {fileID: 1387810187}
   isTargetNeeded: 1
   hasIndicator: 0
   indicatorPrefab: {fileID: 0}
+  _anim: {fileID: 659583931}
 --- !u!1 &767482117
 GameObject:
   m_ObjectHideFlags: 0
@@ -6321,6 +6407,11 @@ RectTransform:
   m_AnchoredPosition: {x: 355, y: -10}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!95 &1095764601 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4119239024837987705, guid: 31187b514146de044bad98db398c2007, type: 3}
+  m_PrefabInstance: {fileID: 6627111241376913523}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1176355090
 GameObject:
   m_ObjectHideFlags: 0
@@ -6486,7 +6577,7 @@ GameObject:
   - component: {fileID: 1203086722}
   - component: {fileID: 1203086723}
   m_Layer: 5
-  m_Name: Ability2
+  m_Name: SpawnMinion
   m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6547,24 +6638,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1203086717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a525ce4611e9b154685658093e0c501b, type: 3}
+  m_Script: {fileID: 11500000, guid: 145effab8647cb440858b64bf440a39a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityName: Ability2
-  cd: 4
-  cdTimer: 4
-  isCd: 0
+  _cd: 5
+  _cdTimer: 5
+  _isCd: 0
   range: 5
-  baseDamage: 0
-  damageScaling: 0
-  level: 0
-  animationTime: 1
-  abilityImage: {fileID: 1569203783}
-  abilityCdImage: {fileID: 215597784}
-  isOnHoldTouch: 1
+  _baseDamage: 0
+  _damageScaling: 0
+  _level: 1
+  _animationTime: 0
+  _abilityObject: {fileID: 589625479478512293, guid: 8201ba955928beb46879c0e24bea6488, type: 3}
   isTargetNeeded: 0
   hasIndicator: 1
   indicatorPrefab: {fileID: 1080357390513288825, guid: 498a98458cfe99646b241636dcef5816, type: 3}
+  _anim: {fileID: 0}
 --- !u!1 &1204033589
 GameObject:
   m_ObjectHideFlags: 0
@@ -9554,9 +9643,9 @@ GameObject:
   - component: {fileID: 1443346510}
   - component: {fileID: 1443346513}
   - component: {fileID: 1443346514}
-  - component: {fileID: 1443346515}
+  - component: {fileID: 1443346516}
   m_Layer: 5
-  m_Name: Ability1
+  m_Name: FireBall
   m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9608,7 +9697,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 42
---- !u!114 &1443346515
+--- !u!114 &1443346516
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9617,24 +9706,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1443346509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a525ce4611e9b154685658093e0c501b, type: 3}
+  m_Script: {fileID: 11500000, guid: f1cce51986bba434a84ed6c41d2ada73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityName: Ability1
-  cd: 4
-  cdTimer: 4
-  isCd: 0
-  range: 5
-  baseDamage: 100
-  damageScaling: 1.2
-  level: 1
-  animationTime: 1
-  abilityImage: {fileID: 737228152}
-  abilityCdImage: {fileID: 1952759650}
-  isOnHoldTouch: 0
+  _cd: 2
+  _cdTimer: 2
+  _isCd: 0
+  range: 10
+  _baseDamage: 100
+  _damageScaling: 1.2
+  _level: 1
+  _animationTime: 10
+  _abilityObject: {fileID: 670395680}
   isTargetNeeded: 0
   hasIndicator: 0
   indicatorPrefab: {fileID: 0}
+  _anim: {fileID: 659583931}
 --- !u!1 &1519329474
 GameObject:
   m_ObjectHideFlags: 0
@@ -10193,7 +10280,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1825711432}
-  - component: {fileID: 1825711433}
   m_Layer: 5
   m_Name: Abilities
   m_TagString: Untagged
@@ -10229,22 +10315,6 @@ RectTransform:
   m_AnchoredPosition: {x: 156, y: -79}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1825711433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825711431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a1fcc0e7b6b8404bb6de99e9155edf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _basicAttackImage: {fileID: 1033909413}
-  _anim: {fileID: 659583931}
-  ice: {fileID: 1387810187}
-  _empoweredMinionPrefab: {fileID: 589625479478512293, guid: 8201ba955928beb46879c0e24bea6488, type: 3}
 --- !u!1 &1873955334
 GameObject:
   m_ObjectHideFlags: 0

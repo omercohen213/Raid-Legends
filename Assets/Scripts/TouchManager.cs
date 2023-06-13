@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -62,15 +63,19 @@ public class TouchManager : MonoBehaviour
                         //StartCoroutine(WaitForTapOrHold(finger));
                     }*/
                     _currentTouchedAbility = touchedAbility;
-                    _player.UpdateAttackRange(touchedAbility.range);
+                    _player.UpdateAttackRange(touchedAbility.Range);
                     // If ability has indicator, instantiate it and wait for touch release
-                    if (touchedAbility.hasIndicator)
+                    if (touchedAbility.HasIndicator)
                     {
+                        /*if (touchedAbility.HasDirection)
+                        {
+                            
+                        }*/
                         _abilityFingerIndex = finger.index;
-                        GameObject indicatorPrefab = _currentTouchedAbility.indicatorPrefab;
+                        GameObject indicatorPrefab = _currentTouchedAbility.IndicatorPrefab;
                         Vector3 indicatorPosition = GetClosestPointToPlayerRange(finger);
                         _currentAbilityIndicator = Instantiate(indicatorPrefab, indicatorPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
-                        AbilityManager.Instance.ShrinkAbilityImage(touchedAbility);
+                        touchedAbility.ShrinkAbilityImage(touchedAbility);
                         _player.ShowPlayerRange();
                     }
 
@@ -78,8 +83,9 @@ public class TouchManager : MonoBehaviour
                     else
                     {
                         float transitionDuration = 0.2f;
-                        AbilityManager.Instance.ShrinkAbilityImage(touchedAbility, transitionDuration);
+                        touchedAbility.ShrinkAbilityImage(touchedAbility, transitionDuration);
                         _player.ShowPlayerRange(transitionDuration);
+
                         _player.TryUseAbility(touchedAbility, Vector3.zero);
                     }
 
@@ -112,7 +118,7 @@ public class TouchManager : MonoBehaviour
         var keyValuePair = _touchIndicators.FirstOrDefault(pair => pair.Key == fingerId);
         _touchIndicators[keyValuePair.Key].transform.position = finger.screenPosition;
 
-        if (_currentTouchedAbility != null && _currentTouchedAbility.hasIndicator && _abilityFingerIndex == finger.index)
+        if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
         {
             HandleAbilityIndicator(finger);
         }
@@ -129,11 +135,11 @@ public class TouchManager : MonoBehaviour
         }
 
         // Destroy ability indicator and use ability
-        if (_currentTouchedAbility != null && _currentTouchedAbility.hasIndicator && _abilityFingerIndex == finger.index)
+        if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
         {
             Vector3 indicatorPos = _currentAbilityIndicator.transform.position;
             _player.TryUseAbility(_currentTouchedAbility, indicatorPos);
-            AbilityManager.Instance.ResetAbilityImage(_currentTouchedAbility);
+            _currentTouchedAbility.ResetAbilityImage(_currentTouchedAbility);
             _player.HidePlayerRange();
 
             _currentTouchedAbility = null;
@@ -153,7 +159,7 @@ public class TouchManager : MonoBehaviour
             float distanceToPlayer = GetDistanceFromPlayer(finger);
 
             // Check if the finger position is within the ability range
-            if (distanceToPlayer <= _currentTouchedAbility.range)
+            if (distanceToPlayer <= _currentTouchedAbility.Range)
             {
                 _currentAbilityIndicator.transform.position = fingerPosition;
             }
@@ -178,12 +184,11 @@ public class TouchManager : MonoBehaviour
 
     private Vector3 GetClosestPointToPlayerRange(Finger finger)
     {
-
         Vector3 playerPosition = _player.transform.position;
         Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
         fingerPosition.z = 0;
         Vector3 directionToPlayer = fingerPosition - playerPosition;
-        Vector3 closestPoint = playerPosition + (directionToPlayer.normalized * _currentTouchedAbility.range);
+        Vector3 closestPoint = playerPosition + (directionToPlayer.normalized * _currentTouchedAbility.Range);
         return closestPoint;
     }
 
