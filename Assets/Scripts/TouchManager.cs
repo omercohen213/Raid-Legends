@@ -15,7 +15,6 @@ public class TouchManager : MonoBehaviour
 
     private int _abilityFingerIndex;
     private Ability _currentTouchedAbility;
-    private GameObject _currentAbilityIndicator;
 
     private void Awake()
     {
@@ -41,6 +40,7 @@ public class TouchManager : MonoBehaviour
         EnhancedTouchSupport.Disable();
     }
 
+
     private void OnFingerDown(Finger finger)
     {
         // Show touch indicators
@@ -57,55 +57,23 @@ public class TouchManager : MonoBehaviour
             {
                 if (coll.gameObject.TryGetComponent<Ability>(out var touchedAbility))
                 {
-                    /*if (touchedAbility.isOnHoldTouch)
-                    {
-                        _isTouchOnAbility2 = true;
-                        //StartCoroutine(WaitForTapOrHold(finger));
-                    }*/
+                    _abilityFingerIndex = finger.index;
                     _currentTouchedAbility = touchedAbility;
-                    _player.UpdateAttackRange(touchedAbility.Range);
-                    // If ability has indicator, instantiate it and wait for touch release
-                    if (touchedAbility.HasIndicator)
-                    {
-                        /*if (touchedAbility.HasDirection)
-                        {
-                            
-                        }*/
-                        _abilityFingerIndex = finger.index;
-                        GameObject indicatorPrefab = _currentTouchedAbility.IndicatorPrefab;
-                        Vector3 indicatorPosition = GetClosestPointToPlayerRange(finger);
-                        _currentAbilityIndicator = Instantiate(indicatorPrefab, indicatorPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
-                        touchedAbility.ShrinkAbilityImage(touchedAbility);
-                        _player.ShowPlayerRange();
-                    }
-
-                    // Else use the ability immediately and show touch and range for a brief moment
-                    else
-                    {
-                        float transitionDuration = 0.2f;
-                        touchedAbility.ShrinkAbilityImage(touchedAbility, transitionDuration);
-                        _player.ShowPlayerRange(transitionDuration);
-
-                        _player.TryUseAbility(touchedAbility, Vector3.zero);
-                    }
-
+                    Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
+                    fingerPosition.z = 0;
+                    touchedAbility.OnAbilityTouch(fingerPosition);
                 }
             }
 
             float touchRadius = 0.5f;
-
             Vector3 touchPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
             Collider2D[] colliders = Physics2D.OverlapCircleAll(touchPosition, touchRadius); //, LayerMask.GetMask("Entity")
 
             foreach (Collider2D collider in colliders)
             {
-                if (collider.gameObject.TryGetComponent(out Entity entityColl))
+                if (collider.gameObject.TryGetComponent(out Entity entity))
                 {
-                    if (_player.IsAgainst(entityColl))
-                    {
-                        _player.TargetEnemy(entityColl);
-                    }
-                    UIManager.Instance.ShowUIEntityStats(collider.gameObject);
+                    OnEntityTouch(entity);
                     break;
                 }
             }
@@ -120,7 +88,22 @@ public class TouchManager : MonoBehaviour
 
         if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
         {
-            HandleAbilityIndicator(finger);
+            Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
+            fingerPosition.z = 0;
+            _currentTouchedAbility.MoveAbilityIndicator(fingerPosition);
+
+            Collider2D coll = Physics2D.OverlapPoint(finger.screenPosition);
+            if (coll != null)
+            {
+                if (coll.gameObject.name == "AbilityCancel")
+                {
+                    _currentTouchedAbility.OnAbilityCancelHover();
+                }
+                else
+                {
+                    _currentTouchedAbility.OnAbilityCancelRelease();
+                }
+            }
         }
     }
 
@@ -137,59 +120,22 @@ public class TouchManager : MonoBehaviour
         // Destroy ability indicator and use ability
         if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
         {
-            Vector3 indicatorPos = _currentAbilityIndicator.transform.position;
-            _player.TryUseAbility(_currentTouchedAbility, indicatorPos);
-            _currentTouchedAbility.ResetAbilityImage(_currentTouchedAbility);
-            _player.HidePlayerRange();
-
+            Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
+            fingerPosition.z = 0;
+            _currentTouchedAbility.ReleaseAbilityIndicator(fingerPosition);
+            //_currentTouchedAbility.OnAbilityCancel();
             _currentTouchedAbility = null;
-            Destroy(_currentAbilityIndicator);
-
 
         }
     }
 
-    // Show indicator according to player's range
-    private void HandleAbilityIndicator(Finger finger)
+    private void OnEntityTouch(Entity entity)
     {
-        Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
-        fingerPosition.z = 0;
-        if (_currentAbilityIndicator != null)
+        if (_player.IsAgainst(entity))
         {
-            float distanceToPlayer = GetDistanceFromPlayer(finger);
-
-            // Check if the finger position is within the ability range
-            if (distanceToPlayer <= _currentTouchedAbility.Range)
-            {
-                _currentAbilityIndicator.transform.position = fingerPosition;
-            }
-
-            else
-            {
-                Vector3 indicatorPosition = GetClosestPointToPlayerRange(finger);
-                _currentAbilityIndicator.transform.position = indicatorPosition;
-            }
+            _player.TargetEnemy(entity);
         }
-    }
-
-    private float GetDistanceFromPlayer(Finger finger)
-    {
-        Vector3 playerPosition = _player.transform.position;
-        Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
-        fingerPosition.z = 0;
-        Vector3 directionToPlayer = fingerPosition - playerPosition;
-        float distanceToPlayer = directionToPlayer.magnitude;
-        return distanceToPlayer;
-    }
-
-    private Vector3 GetClosestPointToPlayerRange(Finger finger)
-    {
-        Vector3 playerPosition = _player.transform.position;
-        Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
-        fingerPosition.z = 0;
-        Vector3 directionToPlayer = fingerPosition - playerPosition;
-        Vector3 closestPoint = playerPosition + (directionToPlayer.normalized * _currentTouchedAbility.Range);
-        return closestPoint;
+        UIManager.Instance.ShowUIEntityStats(entity.gameObject);
     }
 
     private IEnumerator WaitForTapOrHold(Finger finger)
@@ -204,10 +150,8 @@ public class TouchManager : MonoBehaviour
         }
         if (finger.isActive)
         {
-            Debug.Log(" co held for 1s");
+            Debug.Log("held for 1s");
 
         }
     }
-
-
 }

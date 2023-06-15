@@ -141,54 +141,47 @@ public class Player : Entity
     }
 
     // On ability use, start moving towards target.
-    // If there is no targeted entity, try to find one in target range
-    public void TryUseAbility(Ability ability, Vector3 abilityPosition)
+    // If there is no targeted entity, try to find one in range
+    public void TryUseAbility(Ability ability)
     {
         _currentAbilty = ability;
-        if (!ability.IsTargetNeeded)
-        {
-            ability.UseAbility(abilityPosition);
-        }
 
+        if (_targetedEntity != null)
+        {
+            _attackRange.radius = _currentAbilty.Range;
+            if (EntitiesInAttackRange.Contains(_targetedEntity))
+            {
+                ability.UseAbility(_targetedEntity.transform.position);
+            }
+            else
+            {
+                _movingTowardsTarget = true;
+            }
+        }
         else
         {
-            if (_targetedEntity != null)
+            Entity priorityTarget;
+            if (_attackRange.radius > _targetRange.radius)
             {
+                priorityTarget = FindPriotityTarget(_entitiesInAttackRange);
+            }
+            else
+            {
+                priorityTarget = FindPriotityTarget(_entitiesInTargetRange);
+            }
+
+            if (priorityTarget != null)
+            {
+                _currentAbilty = ability;
                 _attackRange.radius = _currentAbilty.Range;
+                _targetedEntity = priorityTarget;
                 if (EntitiesInAttackRange.Contains(_targetedEntity))
                 {
-                    ability.UseAbility();
+                    ability.UseAbility(_targetedEntity.transform.position);
                 }
                 else
                 {
                     _movingTowardsTarget = true;
-                }
-            }
-            else
-            {
-                Entity priorityTarget;
-                if (_attackRange.radius > _targetRange.radius)
-                {
-                    priorityTarget = FindPriotityTarget(_entitiesInAttackRange);
-                }
-                else
-                {
-                    priorityTarget = FindPriotityTarget(_entitiesInTargetRange);
-                }
-
-                if (priorityTarget != null)
-                {
-                    _currentAbilty = ability;
-                    _attackRange.radius = _currentAbilty.Range;
-                    _targetedEntity = priorityTarget;
-                    if (EntitiesInAttackRange.Contains(_targetedEntity))
-                    {
-                        ability.UseAbility(abilityPosition);
-                    }
-                    else
-                    {
-                        _movingTowardsTarget = true;
-                    }
                 }
             }
         }

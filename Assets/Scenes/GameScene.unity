@@ -360,9 +360,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 227735602}
+  - component: {fileID: 227735603}
   m_Layer: 5
   m_Name: AbilityCancel
-  m_TagString: Untagged
+  m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -388,6 +389,22 @@ RectTransform:
   m_AnchoredPosition: {x: 395, y: 181}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!58 &227735603
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227735601}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 25.740168
 --- !u!1 &274349729
 GameObject:
   m_ObjectHideFlags: 0
@@ -5385,7 +5402,7 @@ GameObject:
   m_Component:
   - component: {fileID: 659583930}
   - component: {fileID: 659583931}
-  m_Layer: 9
+  m_Layer: 7
   m_Name: AbilityObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5445,7 +5462,11 @@ GameObject:
   m_Component:
   - component: {fileID: 670395681}
   - component: {fileID: 670395682}
-  m_Layer: 9
+  - component: {fileID: 670395683}
+  - component: {fileID: 670395684}
+  - component: {fileID: 670395685}
+  - component: {fileID: 670395686}
+  m_Layer: 7
   m_Name: FireBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5461,7 +5482,7 @@ RectTransform:
   m_GameObject: {fileID: 670395680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 659583930}
@@ -5515,7 +5536,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -347951819, guid: 7ee988b207404344d97a3453628f2239, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.64, y: 0.64}
@@ -5524,6 +5545,90 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &670395683
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.006200403}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.05, y: 0.4}
+    newSize: {x: 0.64, y: 0.64}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.05, y: 0.38759917}
+  m_EdgeRadius: 0
+--- !u!50 &670395684
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!114 &670395685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1cce51986bba434a84ed6c41d2ada73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cd: 2
+  _abilityObject: {fileID: 670395680}
+  _hasIndicator: 1
+  _isDirectionIndicator: 1
+  _isOnPointIndicator: 0
+  _indicatorPrefab: {fileID: 6243101940797275340, guid: 346f53ec2b6b7d04081bb01decb5214d, type: 3}
+  _range: 4
+  _baseDamage: 100
+  _damageScaling: 1.2
+  _level: 1
+  _animationTime: 10
+  _anim: {fileID: 659583931}
+  fireballCollision: {fileID: 0}
+--- !u!114 &670395686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670395680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9c1185d653472748945e9a70406be32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &692477924
 GameObject:
   m_ObjectHideFlags: 0
@@ -5535,7 +5640,7 @@ GameObject:
   - component: {fileID: 692477925}
   m_Layer: 5
   m_Name: Spell2
-  m_TagString: Untagged
+  m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5706,17 +5811,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cd: 1
-  _cdTimer: 1
-  _isCd: 0
-  range: 5
+  _abilityObject: {fileID: 0}
+  _hasIndicator: 0
+  _isDirectionIndicator: 0
+  _isOnPointIndicator: 0
+  _indicatorPrefab: {fileID: 0}
+  _range: 2.5
   _baseDamage: 10
   _damageScaling: 2
   _level: 1
   _animationTime: 1
-  _abilityObject: {fileID: 0}
-  isTargetNeeded: 1
-  hasIndicator: 0
-  indicatorPrefab: {fileID: 0}
   _anim: {fileID: 1095764601}
 --- !u!1 &758814302
 GameObject:
@@ -5796,17 +5900,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cd: 4
-  _cdTimer: 4
-  _isCd: 0
-  range: 12
+  _abilityObject: {fileID: 1387810187}
+  _hasIndicator: 0
+  _isDirectionIndicator: 0
+  _isOnPointIndicator: 0
+  _indicatorPrefab: {fileID: 0}
+  _range: 15
   _baseDamage: 125
   _damageScaling: 1.15
   _level: 1
   _animationTime: 1
-  _abilityObject: {fileID: 1387810187}
-  isTargetNeeded: 1
-  hasIndicator: 0
-  indicatorPrefab: {fileID: 0}
   _anim: {fileID: 659583931}
 --- !u!1 &767482117
 GameObject:
@@ -6642,17 +6745,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cd: 5
-  _cdTimer: 5
-  _isCd: 0
-  range: 5
+  _abilityObject: {fileID: 589625479478512293, guid: 8201ba955928beb46879c0e24bea6488, type: 3}
+  _hasIndicator: 1
+  _isDirectionIndicator: 0
+  _isOnPointIndicator: 1
+  _indicatorPrefab: {fileID: 1080357390513288825, guid: 498a98458cfe99646b241636dcef5816, type: 3}
+  _range: 5
   _baseDamage: 0
   _damageScaling: 0
   _level: 1
   _animationTime: 0
-  _abilityObject: {fileID: 589625479478512293, guid: 8201ba955928beb46879c0e24bea6488, type: 3}
-  isTargetNeeded: 0
-  hasIndicator: 1
-  indicatorPrefab: {fileID: 1080357390513288825, guid: 498a98458cfe99646b241636dcef5816, type: 3}
   _anim: {fileID: 0}
 --- !u!1 &1204033589
 GameObject:
@@ -9710,18 +9812,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cd: 2
-  _cdTimer: 2
-  _isCd: 0
-  range: 10
+  _abilityObject: {fileID: 670395680}
+  _hasIndicator: 1
+  _isDirectionIndicator: 1
+  _isOnPointIndicator: 0
+  _indicatorPrefab: {fileID: 6243101940797275340, guid: 346f53ec2b6b7d04081bb01decb5214d, type: 3}
+  _range: 6
   _baseDamage: 100
   _damageScaling: 1.2
   _level: 1
   _animationTime: 10
-  _abilityObject: {fileID: 670395680}
-  isTargetNeeded: 0
-  hasIndicator: 0
-  indicatorPrefab: {fileID: 0}
   _anim: {fileID: 659583931}
+  fireballCollision: {fileID: 670395686}
 --- !u!1 &1519329474
 GameObject:
   m_ObjectHideFlags: 0
@@ -9885,7 +9987,7 @@ GameObject:
   - component: {fileID: 1554898378}
   m_Layer: 5
   m_Name: Recall
-  m_TagString: Untagged
+  m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10282,7 +10384,7 @@ GameObject:
   - component: {fileID: 1825711432}
   m_Layer: 5
   m_Name: Abilities
-  m_TagString: Untagged
+  m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10326,7 +10428,7 @@ GameObject:
   - component: {fileID: 1873955335}
   m_Layer: 5
   m_Name: Spell1
-  m_TagString: Untagged
+  m_TagString: AbilityUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10388,7 +10490,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.000030517578, y: -0.000022888184}
-  m_SizeDelta: {x: 100, y: 50}
+  m_SizeDelta: {x: 100, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1888321118
 MonoBehaviour:
@@ -83815,6 +83917,26 @@ PrefabInstance:
       propertyPath: _rangeSpriteRenderer
       value: 
       objectReference: {fileID: 1269541018}
+    - target: {fileID: 3108137144738666376, guid: 31187b514146de044bad98db398c2007, type: 3}
+      propertyPath: m_Size.x
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3108137144738666376, guid: 31187b514146de044bad98db398c2007, type: 3}
+      propertyPath: m_Size.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3108137144738666376, guid: 31187b514146de044bad98db398c2007, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3108137144738666376, guid: 31187b514146de044bad98db398c2007, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3108137144738666376, guid: 31187b514146de044bad98db398c2007, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8275289386339663140, guid: 31187b514146de044bad98db398c2007, type: 3}
       propertyPath: m_RootOrder
       value: 5

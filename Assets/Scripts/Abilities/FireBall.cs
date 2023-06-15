@@ -6,19 +6,27 @@ using UnityEngine.InputSystem.EnhancedTouch;
 
 public class FireBall : Ability
 {
-    public override void UseAbility(Finger finger)
+    [SerializeField] private FireballCollision fireballCollision;
+    private Vector3 _direction;
+
+
+    public override void UseAbility(Vector3 abilityPosition)
     {
         if (!_isCd)
         {
-/*            _isCd = true;
-            GameObject fireBall = Instantiate(_abilityObject, abilityPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
+            _isCd = true;
+            //GameObject fireBall = Instantiate(_abilityObject, abilityPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
+            _abilityObject.gameObject.SetActive(true);
+            _abilityObject.transform.position = _player.transform.position + _directionOffset;
             _anim.SetTrigger("FireBall");
-            int abilityDamage = Mathf.RoundToInt(_baseDamage + _level * _baseDamage * _damageScaling);
-            _player.TargetedEntity.ReceiveDamage(abilityDamage, false, true);
 
-            Vector3 direction = targetPosition - fireballTransform.position;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _abilityObject.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);*/
+            _direction = abilityPosition - _abilityObject.transform.position;
+            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            _abilityObject.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            fireballCollision.AbilityDamage = Mathf.RoundToInt(_baseDamage + _level * _baseDamage * _damageScaling);
+            fireballCollision.Direction = _direction;
+            fireballCollision.InitialPosition = _initialIndicatorPosition;
         }
     }
 }

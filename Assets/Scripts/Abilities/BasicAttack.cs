@@ -4,7 +4,7 @@ using UnityEngine;
 public class BasicAttack : Ability
 {
     private float _showRangeDuration = 0.2f;
-    public override void UseAbility()
+    public override void UseAbility(Vector3 abilityPosition)
     {
         if (!_isCd)
         {

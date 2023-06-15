@@ -13,4 +13,10 @@ public class Ice : Ability
             _player.TargetedEntity.ReceiveDamage(abilityDamage, false, true);
         }    
     }
+
+    protected override void Update()
+    {
+        base.Update();
+        //_abilityObject.transform.position = abilityPosition;
+    }
 }
