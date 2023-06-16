@@ -51,7 +51,6 @@ public class Player : Entity
             _movingTowardsTarget = false;
 
             // Negative scales to match sprite movement
-
             if (horizontalInput > _joystickMinInput)
             {
                 currentPlayerScale.x = 1f;
@@ -99,8 +98,7 @@ public class Player : Entity
         }
 
         if (_isShowingRange)
-        {
-            _rangeOffset = new Vector3(0.17f, -0.34f);
+        {   
             DrawRange();
         }
     }
@@ -214,6 +212,7 @@ public class Player : Entity
 
     public void DrawRange()
     {
+        _rangeOffset = new Vector3(0.17f, -0.34f);
         int segments = 50;
         _rangeLineRenderer.positionCount = segments + 2;
         _rangeLineRenderer.widthMultiplier = 0.1f;
@@ -244,8 +243,8 @@ public class Player : Entity
         _attackRange.radius = radius;
     }
 
-    // Show range
-    public void ShowPlayerRange()
+        // Show range
+        public void ShowPlayerRange()
     {
         _isShowingRange = true;
         _rangeLineRenderer.enabled = true;

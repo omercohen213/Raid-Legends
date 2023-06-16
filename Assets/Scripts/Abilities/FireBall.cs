@@ -12,6 +12,7 @@ public class FireBall : Ability
 
     public override void UseAbility(Vector3 abilityPosition)
     {
+        base.UseAbility(abilityPosition);
         if (!_isCd)
         {
             _isCd = true;

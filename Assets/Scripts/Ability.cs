@@ -11,12 +11,14 @@ public class Ability : MonoBehaviour
     protected string _abilityName;
     protected Image _abilityImage;
     protected Image _abilityCdImage;
+    protected Text _abilityCdText;
+
     [SerializeField] protected float _cd;
     protected float _cdTimer;
     protected bool _isCd;
 
     [SerializeField] protected GameObject _abilityObject;
-   // protected GameObject _abilityObjectPosition;
+    // protected GameObject _abilityObjectPosition;
     [SerializeField] protected bool _hasIndicator;
     [SerializeField] protected bool _isDirectionIndicator; // Show direction indicator of the ability
     [SerializeField] protected bool _isOnPointIndicator; // Show point indicator where the ability object spawns
@@ -60,18 +62,28 @@ public class Ability : MonoBehaviour
             Debug.LogError("Missing CDImage");
         }
 
+        string CdTextPath = "Abilities/" + _abilityName + "/CDText";
+        if (!GameObject.Find(CdTextPath).TryGetComponent(out _abilityCdText))
+        {
+            Debug.LogError("Missing CDText");
+        }
+
         _abilityCancelGo = GameObject.Find("AbilityCancel");
-        if( _abilityCancelGo == null )
+        if (_abilityCancelGo == null)
         {
             Debug.LogError("Missing Ability Cancel");
         }
-        else _abilityCancelImage = _abilityCancelGo.GetComponentInChildren<Image>();
+        else
+        {
+            _abilityCancelImage = _abilityCancelGo.GetComponentInChildren<Image>();
+        }
     }
 
     protected virtual void Start()
     {
         _cdTimer = _cd;
-        
+        _abilityCancelGo.SetActive(false);
+        _abilityCdText.enabled = false;
     }
 
     protected virtual void Update()
@@ -97,24 +109,21 @@ public class Ability : MonoBehaviour
             _isCd = false;
             _cdTimer = _cd;
             _abilityCdImage.fillAmount = 0.0f;
+            _abilityCdText.enabled = false;
+
         }
         // Still on cd
         else
         {
             _abilityCdImage.fillAmount = _cdTimer / _cd;
+            _abilityCdText.text = _cdTimer.ToString("F1");
+            if (_abilityName != "BasicAttack")
+            {
+                _abilityCdText.enabled = true;
+            }
         }
     }
 
-    // Disable this ability use for cd time, disable all abilties for animation time
-    /* private void DisableAbilityUse(Ability ability)
-     {
-         // To avoid using 2 abilities at the same time     
-         ability.isAnimationActive = true;
-         disableAllTimer = ability.animationTime;
-         disableAll = true;
-         ability.isCd = true;
-         ability.cdTimer = ability.cd;
-     }*/
 
     public void OnAbilityTouch(Vector3 fingerPosition)
     {
@@ -126,8 +135,22 @@ public class Ability : MonoBehaviour
             if (_isDirectionIndicator)
             {
                 _initialIndicatorPosition = _player.transform.position + _directionOffset;
-                float angle = GetIndicatorAngle(fingerPosition);              
-                _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.Euler(0f,0f,angle), GameObject.Find("AbilityObjects").transform);
+                float angle = GetIndicatorAngle(fingerPosition);
+
+                string indicatorObjectName = _indicatorPrefab.name;
+                GameObject existingIndicator = GameObject.Find("AbilityObjects/" + indicatorObjectName);
+                if (existingIndicator != null)
+                {
+                    _indicator = existingIndicator;
+                    _indicator.transform.SetPositionAndRotation(_player.transform.position + _directionOffset, Quaternion.Euler(0f, 0f, angle));
+                    _indicator.GetComponent<SpriteRenderer>().enabled = true;
+                }
+                else
+                {
+                    _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.Euler(0f, 0f, angle), GameObject.Find("AbilityObjects").transform);
+                    _indicator.name = indicatorObjectName;
+                }
+
                 _indicator.transform.localScale = new Vector3(1f, _player.AttackRange.radius / 3.8f);
             }
             else if (_isOnPointIndicator)
@@ -136,10 +159,9 @@ public class Ability : MonoBehaviour
                 _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
             }
 
-            OnAbilityCancelRelease();
+            _abilityCancelGo.SetActive(true);
             ShrinkAbilityImage();
             _player.ShowPlayerRange();
-
         }
 
         // Else use the ability immediately and show touch and range for a brief moment
@@ -153,13 +175,12 @@ public class Ability : MonoBehaviour
     }
 
     // Show indicator according to player's range
-    public void MoveAbilityIndicator(Vector3 fingerPosition)
+    public void MoveIndicator(Vector3 fingerPosition)
     {
         if (_isDirectionIndicator)
         {
             float angle = GetIndicatorAngle(fingerPosition);
-            _indicator.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-            _indicator.transform.position = _player.transform.position + _directionOffset;
+            _indicator.transform.SetPositionAndRotation(_player.transform.position + _directionOffset, Quaternion.Euler(0f, 0f, angle));
         }
         else if (_isOnPointIndicator)
         {
@@ -186,22 +207,22 @@ public class Ability : MonoBehaviour
         return angle;
     }
 
-    public void ReleaseAbilityIndicator(Vector3 fingerPosition)
+    public void ReleaseIndicator(Vector3 fingerPosition)
     {
         if (_isDirectionIndicator)
-        {          
+        {
             UseAbility(fingerPosition);
         }
         else if (_isOnPointIndicator)
         {
             Vector3 indicatorPos = _indicator.transform.position;
             UseAbility(indicatorPos);
-           
+
         }
         ResetAbilityImage();
         _player.HidePlayerRange();
-
-        Destroy(_indicator);
+        _abilityCancelGo.SetActive(false);
+        _indicator.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     private float GetDistanceFromPlayer(Vector3 fingerPosition)
@@ -220,23 +241,32 @@ public class Ability : MonoBehaviour
         return closestPoint;
     }
 
-    public void OnAbilityCancel()
+    public void AbilityCancel()
     {
-
+        _player.HidePlayerRange();
+        _indicator.GetComponent<SpriteRenderer>().enabled = false;
+        ResetAbilityImage();
+        _abilityCancelGo.SetActive(false);
     }
 
-    public void OnAbilityCancelHover()
+    public void AbilityCancelHover()
     {
-        _abilityCancelImage.color = Color.cyan;
-        float expandScale = 1.2f;
+        Color color = new() { r = 255f, g = 0f, b = 0f, a = 0.39f };
+        _abilityCancelImage.color = color;
+        float expandScale = 1.4f;
         _abilityCancelImage.transform.localScale = new Vector3(expandScale, expandScale);
+        _indicator.GetComponent<SpriteRenderer>().color = color;
+        _player.HidePlayerRange();
     }
 
-    public void OnAbilityCancelRelease()
+    public void AbilityCancelRelease()
     {
-        _abilityCancelImage.color = Color.red;
+        Color color = new() { r = 0f, g = 255f, b = 255f, a = 0.39f };
+        _abilityCancelImage.color = color;
         float normalScale = 1f;
         _abilityCancelImage.transform.localScale = new Vector3(normalScale, normalScale);
+        _indicator.GetComponent<SpriteRenderer>().color = color;
+        _player.ShowPlayerRange();
     }
 
     // Show touch on ability image

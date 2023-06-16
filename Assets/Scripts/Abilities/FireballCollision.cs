@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FireballCollision : MonoBehaviour
 {
-    private readonly float _speed = 8f;
+    private readonly float _speed = 10f;
     private float _maxRange;
     private Vector3 _direction;
     private Vector3 _initialPosition;

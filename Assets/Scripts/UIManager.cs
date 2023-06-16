@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +22,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private Entity _activeTarget;
+    private bool _isTargetActive;
+    public bool IsTargetActive { get => _isTargetActive; set => _isTargetActive = value; }
+    
+
     [SerializeField] private GameObject _entityStats;
     [SerializeField] Transform _hpBar;
     [SerializeField] Text _hpText;
@@ -41,17 +44,32 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (_isTargetActive)
+        {
+            UpdateUIEntityStats();
+        }
+    }
+
     public void ShowUIEntityStats(GameObject gameObject)
     {
         Entity entity = gameObject.GetComponent<Entity>();
-        _hpText.text = entity.Hp + " / " + entity.MaxHp;
-        float hpRatio = (float)entity.Hp / entity.MaxHp;
-        _hpBar.localScale = new Vector3(hpRatio, 1, 1);        
+        _isTargetActive= true;
+        _activeTarget = entity;      
+    }
+    public void UpdateUIEntityStats()
+    {
+        _hpText.text = _activeTarget.Hp + " / " + _activeTarget.MaxHp;
+        float hpRatio = (float)_activeTarget.Hp / _activeTarget.MaxHp;
+        _hpBar.localScale = new Vector3(hpRatio, 1, 1);
         _entityStats.SetActive(true);
     }
 
     public void HideUIEntityStats()
     {
         _entityStats.SetActive(false);
+        _isTargetActive = false;
+        _activeTarget = null;
     }
 }
