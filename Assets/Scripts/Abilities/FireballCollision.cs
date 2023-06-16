@@ -21,11 +21,11 @@ public class FireballCollision : MonoBehaviour
         {
             Debug.LogError("Missing Player object");
         }
-        _maxRange = Vector3.Distance(_initialPosition, _player.transform.position + (_direction.normalized * _player.AttackRange.radius));
     }
 
     private void Update()
     {
+        _maxRange = Vector3.Distance(_initialPosition, _player.transform.position + (_direction.normalized * _player.AttackRange.radius));
         Vector3 movement = _speed * Time.deltaTime * _direction.normalized;
         transform.position += movement;
         if (Vector3.Distance(transform.position, _initialPosition) >= _maxRange)

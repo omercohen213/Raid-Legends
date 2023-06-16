@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class SpawnMinion : Ability
+public class SpawnMinion : OnPointAbility
 {
     public override void UseAbility(Vector3 abilityPosition)
     {

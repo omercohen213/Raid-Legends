@@ -32,8 +32,6 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     // Damage
     protected float _critChance;
-    //protected float lastDamage;
-    //protected float damageDelay;
 
     public enum Team { Red, Blue }
     public enum Type { Minion, Player, Tower, AIPlayer }
@@ -45,8 +43,6 @@ public abstract class Entity : MonoBehaviour, IDamageable
     public Entity TargetedEntity { get => _targetedEntity; set => _targetedEntity = value; }
     public List<Entity> EntitiesInTargetRange { get => _entitiesInTargetRange; set => _entitiesInTargetRange = value; }
     public List<Entity> EntitiesInAttackRange { get => _entitiesInAttackRange; set => _entitiesInAttackRange = value; }
-
-    public List<Type> TargetingPriority { get => _targetingPriority; set => _targetingPriority = value; }
     public float CritChance { get => _critChance; }
 
     protected virtual void Awake()

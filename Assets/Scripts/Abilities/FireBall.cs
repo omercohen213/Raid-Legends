@@ -1,14 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 
-public class FireBall : Ability
+public class FireBall : DirectionAbility
 {
     [SerializeField] private FireballCollision fireballCollision;
-    private Vector3 _direction;
-
 
     public override void UseAbility(Vector3 abilityPosition)
     {
@@ -17,7 +11,7 @@ public class FireBall : Ability
         {
             _isCd = true;
             //GameObject fireBall = Instantiate(_abilityObject, abilityPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
-            _abilityObject.gameObject.SetActive(true);
+            _abilityObject.SetActive(true);
             _abilityObject.transform.position = _player.transform.position + _directionOffset;
             _anim.SetTrigger("FireBall");
 

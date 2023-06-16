@@ -16,6 +16,8 @@ public class Tower : Entity
     [SerializeField] private Sprite _towerRangeSafe;
     [SerializeField] private Sprite _towerRangeDanger;
 
+    [SerializeField] private Animator _anim;
+
     protected override void Start()
     {
         base.Start();
@@ -102,5 +104,16 @@ public class Tower : Entity
         return null;
     }
 
+    public override void Death()
+    {
+        _anim.SetTrigger("Explosion");
+        StartCoroutine(WaitForExplosion());
+    }
+
+    private IEnumerator WaitForExplosion()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
 }
 

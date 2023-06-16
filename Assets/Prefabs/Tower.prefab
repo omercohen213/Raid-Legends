@@ -726,6 +726,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6286995397656386581}
   - component: {fileID: 3210453952401394632}
+  - component: {fileID: 2425387498860705533}
   m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
@@ -800,6 +801,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2425387498860705533
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6166641761424436347}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d398f03feffc2884bb3b7e345099f5d4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6302562469982610855
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,7 +975,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _team: 0
   _type: 2
-  _maxHp: 1500
+  _maxHp: 1000
   _baseDamage: 5
   _movementSpeed: 0
   _hpBar: {fileID: 6028627245858408901}
@@ -962,6 +984,7 @@ MonoBehaviour:
   _rangeSpriteRenderer: {fileID: 3093333756370752735}
   _towerRangeSafe: {fileID: 21300000, guid: 3305b87d89b576342bf7aa9044fdb249, type: 3}
   _towerRangeDanger: {fileID: 21300000, guid: bb14ed7f8a95799448673bbe8afb0426, type: 3}
+  _anim: {fileID: 2425387498860705533}
 --- !u!1 &6807156609984608194
 GameObject:
   m_ObjectHideFlags: 0

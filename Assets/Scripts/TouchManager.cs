@@ -62,6 +62,7 @@ public class TouchManager : MonoBehaviour
                     Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
                     fingerPosition.z = 0;
                     touchedAbility.OnAbilityTouch(fingerPosition);
+                    return;
                 }
             }
         }
@@ -71,15 +72,7 @@ public class TouchManager : MonoBehaviour
         Collider2D[] worldColliders = Physics2D.OverlapCircleAll(touchPosition, touchRadius);
 
         foreach (Collider2D worldColl in worldColliders)
-        {
-            if (screenColl != null)
-            {
-                if (screenColl.gameObject.CompareTag("AbilityUI"))
-                {
-                    return;
-                }
-            }
-
+        { 
             if (worldColl.gameObject.TryGetComponent(out Entity entity))
             {
                 OnEntityTouch(entity);
@@ -94,21 +87,23 @@ public class TouchManager : MonoBehaviour
         var keyValuePair = _touchIndicators.FirstOrDefault(pair => pair.Key == fingerId);
         _touchIndicators[keyValuePair.Key].transform.position = finger.screenPosition;
 
-        if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
+        if (_currentTouchedAbility != null && _currentTouchedAbility is IndicatorAbility ability && _abilityFingerIndex == finger.index)
         {
+            IndicatorAbility indicatorAbility = ability;
+
             Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
             fingerPosition.z = 0;
-            _currentTouchedAbility.MoveIndicator(fingerPosition);
+            indicatorAbility.MoveIndicator(fingerPosition);
 
             Collider2D coll = Physics2D.OverlapPoint(finger.screenPosition);
             if (coll != null)
             {
                 if (coll.gameObject.name == "AbilityCancel")
                 {
-                    _currentTouchedAbility.AbilityCancelHover();
+                    indicatorAbility.AbilityCancelHover();
                 }
             }
-            else _currentTouchedAbility.AbilityCancelRelease();
+            else indicatorAbility.AbilityCancelRelease();
         }
     }
 
@@ -123,28 +118,30 @@ public class TouchManager : MonoBehaviour
         }
 
         // Destroy ability indicator and use ability
-        if (_currentTouchedAbility != null && _currentTouchedAbility.HasIndicator && _abilityFingerIndex == finger.index)
+        if (_currentTouchedAbility != null && _currentTouchedAbility is IndicatorAbility ability && _abilityFingerIndex == finger.index)
         {
+            IndicatorAbility indicatorAbility = ability;
+
             Collider2D coll = Physics2D.OverlapPoint(finger.screenPosition);
             if (coll != null)
             {
                 if (coll.gameObject.name == "AbilityCancel")
                 {
-                    _currentTouchedAbility.AbilityCancel();
+                    indicatorAbility.AbilityCancel();
                     _currentTouchedAbility = null;
                 }
                 else
                 {
                     Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
                     fingerPosition.z = 0;
-                    _currentTouchedAbility.ReleaseIndicator(fingerPosition);
+                    indicatorAbility.ReleaseIndicator(fingerPosition);
                 }
             }
             else
             {
                 Vector3 fingerPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
                 fingerPosition.z = 0;
-                _currentTouchedAbility.ReleaseIndicator(fingerPosition);
+                indicatorAbility.ReleaseIndicator(fingerPosition);
                 _currentTouchedAbility = null;
             }
         }
@@ -159,7 +156,7 @@ public class TouchManager : MonoBehaviour
         UIManager.Instance.ShowUIEntityStats(entity.gameObject);
     }
 
-    private IEnumerator WaitForHold(Finger finger)
+    /*private IEnumerator WaitForHold(Finger finger)
     {
         float holdDuration = 1f; // Adjust this duration as needed
         float timer = 0f;
@@ -174,5 +171,5 @@ public class TouchManager : MonoBehaviour
             Debug.Log("held for 1s");
 
         }
-    }
+    }*/
 }

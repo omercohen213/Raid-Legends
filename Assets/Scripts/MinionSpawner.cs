@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
-using static Entity;
 
 public class MinionSpawner : MonoBehaviour
 {

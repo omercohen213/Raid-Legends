@@ -63,8 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 905450ff9f6da1f4a89793c97590d969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 5
-  lineRenderer: {fileID: 0}
 --- !u!212 &3108137144738666376
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -114,7 +112,7 @@ SpriteRenderer:
   m_Size: {x: 4.1, y: 3.19}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!120 &436185149456172093
@@ -1607,7 +1605,7 @@ MonoBehaviour:
   _hpBar: {fileID: 227792555057363426}
   _joystick: {fileID: 2837517060029085152, guid: 1b950fe1b3a499e47b6de5100aa857d0, type: 3}
   _bars: {fileID: 2028002380310187218}
-  lineRenderer: {fileID: 0}
   _anim: {fileID: 4119239024837987705}
   _attackRange: {fileID: 2329921486590838538}
-  _rangeSpriteRenderer: {fileID: 3108137144738666376}
+  _targetRange: {fileID: 0}
+  _rangeLineRenderer: {fileID: 0}

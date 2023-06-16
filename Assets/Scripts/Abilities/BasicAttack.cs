@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class BasicAttack : Ability
 {
-    private float _showRangeDuration = 0.2f;
+    private float _attackDuration = 0.2f;
     public override void UseAbility(Vector3 abilityPosition)
     {
         if (!_isCd)
         {
             _isCd = true;
             BasicAttackAnimation();
-            _player.ShowPlayerRange(_showRangeDuration);
+            _player.ShowPlayerRange(_attackDuration);
             bool isCritical = Random.value < _player.CritChance;
             _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, true);
         }
@@ -26,7 +26,7 @@ public class BasicAttack : Ability
 
     private IEnumerator BasicAttackAnimationCancel()
     {
-        yield return new WaitForSeconds(_animationTime);
+        yield return new WaitForSeconds(_attackDuration);
         _player.Anim.SetBool("Attack", false);
     }
 }

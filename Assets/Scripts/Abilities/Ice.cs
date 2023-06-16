@@ -10,7 +10,7 @@ public class Ice : Ability
         {
             _isCd = true;
             _abilityObject.transform.position = abilityPosition;
-            _anim.SetTrigger("Ability3");
+            _anim.SetTrigger("Ice");
             int abilityDamage = Mathf.RoundToInt(_baseDamage + _level * _baseDamage * _damageScaling);
             _player.TargetedEntity.ReceiveDamage(abilityDamage, false, true);
         }    
