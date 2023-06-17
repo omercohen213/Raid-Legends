@@ -5,14 +5,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Recall : Ability
-{  
+{
     [SerializeField] private Image _recallProgress;
     [SerializeField] private TextMeshProUGUI _recallProgressText;
     private readonly float _recallTime = 5f;
     private float _recallTimer;
     private bool _isRecalling;
+
+    private Vector3 _initialPosition;
+    private int _initialHp;
+
     private readonly Vector3 _baseCameraPosition = new(-47f, 4f, -3f);
-    private readonly Vector3 _recallOffset = new(0f, -1.5f, 0f);
+    private readonly Vector3 _recallOffset = new(0.1f, -1.4f, 0f);
 
     protected override void Awake()
     {
@@ -32,22 +36,6 @@ public class Recall : Ability
     protected override void Start()
     {
         _recallTimer = _recallTime;
-        
-    }
-
-    public override void OnAbilityTouch(Vector3 fingerPosition)
-    {
-        UIManager.Instance.ShowRecallProgress();
-        UseAbility(fingerPosition);
-    }
-
-    public override void UseAbility(Vector3 abilityPosition)
-    {
-        _isRecalling = true;
-        _abilityObject.SetActive(true);
-        _abilityObject.transform.position = _player.transform.position + _recallOffset;
-        _anim.SetTrigger("Recall");
-        _recallTimer = _recallTime; // Reset the recall timer when the ability is used
     }
 
     protected override void Update()
@@ -56,25 +44,62 @@ public class Recall : Ability
         {
             _recallTimer -= Time.deltaTime;
 
+            // Finished Recall
             if (_recallTimer < 0)
             {
-                UIManager.Instance.HideRecallProgress();
+                StopRecall();
                 SpawnInBase();
-                _isRecalling = false;
             }
+            // Still in progress
             else
             {
                 float progressRatio = _recallTimer / _recallTime;
                 _recallProgress.fillAmount = progressRatio;
                 _recallProgressText.text = _recallTimer.ToString("F1");
+
+                // Stop recalling if player moved or got damage
+                if (_initialHp != _player.Hp || _initialPosition != _player.transform.position)
+                {
+                    StopRecall();
+                }
             }
         }
     }
+
+    public override void OnAbilityTouch(Vector3 fingerPosition)
+    {
+        UIManager.Instance.ShowRecallProgress();
+        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityImage, _touchTransitionDuration);
+        UseAbility(fingerPosition);
+    }
+
+    public override void UseAbility(Vector3 abilityPosition)
+    {
+        if (!_isRecalling)
+        {
+            _isRecalling = true;
+            _abilityObject.SetActive(true);
+            _abilityObject.transform.position = _player.transform.position + _recallOffset;
+            _anim.SetBool("Recall", true);
+            _recallTimer = _recallTime; // Reset the recall timer when the ability is used
+            _initialPosition = _player.transform.position;
+            _initialHp = _player.Hp;
+        }
+    }
+
 
     private void SpawnInBase()
     {
         Vector3 basePosition = GameObject.Find("BlueRespawnPoint").transform.position;
         _player.transform.position = basePosition;
         Camera.main.transform.position = _baseCameraPosition;
+    }
+
+    private void StopRecall()
+    {
+        UIManager.Instance.HideRecallProgress();
+        _isRecalling = false;
+        _abilityObject.SetActive(false);
+        _anim.SetBool("Recall", false);
     }
 }

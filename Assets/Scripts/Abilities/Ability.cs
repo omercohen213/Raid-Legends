@@ -19,6 +19,7 @@ public class Ability : MonoBehaviour
     [SerializeField] protected float _damageScaling; // damage multiplyer per level
     protected int _level;
 
+    protected readonly float _touchTransitionDuration = 0.2f;
     protected Player _player;
     [SerializeField] protected Animator _anim;
 
@@ -97,9 +98,9 @@ public class Ability : MonoBehaviour
     public virtual void OnAbilityTouch(Vector3 fingerPosition)
     {
         _player.UpdateAttackRange(_range);
-        float transitionDuration = 0.2f;
-        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityCdImage, transitionDuration);
-        _player.ShowPlayerRange(transitionDuration);
+        
+        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityCdImage, _touchTransitionDuration);
+        _player.ShowPlayerRange(_touchTransitionDuration);
         _player.TryUseAbility(this);
     }
 }
