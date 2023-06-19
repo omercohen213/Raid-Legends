@@ -10,11 +10,12 @@ public class DirectionAbility : IndicatorAbility
     public override void OnAbilityTouch(Vector3 fingerPosition)
     {
         base.OnAbilityTouch(fingerPosition);
+
         _initialIndicatorPosition = _player.transform.position + _directionOffset;
         float angle = GetIndicatorAngle(fingerPosition);
-
         string indicatorObjectName = _indicatorPrefab.name;
-        GameObject existingIndicator = GameObject.Find("AbilityObjects/" + indicatorObjectName);
+        GameObject existingIndicator = GameObject.Find("RunTimeObjects/" + indicatorObjectName);
+        
         if (existingIndicator != null)
         {
             _indicator = existingIndicator;
@@ -23,7 +24,7 @@ public class DirectionAbility : IndicatorAbility
         }
         else
         {
-            _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.Euler(0f, 0f, angle), GameObject.Find("AbilityObjects").transform);
+            _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.Euler(0f, 0f, angle), GameObject.Find("RunTimeObjects").transform);
             _indicator.name = indicatorObjectName;
         }
 

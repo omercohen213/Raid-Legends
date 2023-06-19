@@ -1601,11 +1601,15 @@ MonoBehaviour:
   _type: 1
   _maxHp: 500
   _baseDamage: 25
+  _xpAmountToGive: 100
+  _goldAmountToGive: 300
   _movementSpeed: 3
   _hpBar: {fileID: 227792555057363426}
+  _anim: {fileID: 4119239024837987705}
   _joystick: {fileID: 2837517060029085152, guid: 1b950fe1b3a499e47b6de5100aa857d0, type: 3}
   _bars: {fileID: 2028002380310187218}
-  _anim: {fileID: 4119239024837987705}
+  _levelUpPrefab: {fileID: 114145464839828206, guid: f2d235318d4f9df47a05efd659842f1b, type: 3}
+  _levelText: {fileID: 5109292023515574835}
   _attackRange: {fileID: 2329921486590838538}
-  _targetRange: {fileID: 0}
-  _rangeLineRenderer: {fileID: 0}
+  _targetRange: {fileID: 8386802915668706743}
+  _rangeLineRenderer: {fileID: 436185149456172093}

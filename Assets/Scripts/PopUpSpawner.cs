@@ -19,6 +19,21 @@ public class PopUpSpawner : MonoBehaviour
         _popUpPool = new ObjectPool<GameObject>(CreatePopUp, OnPopUpGet, OnPopUpRelease);
     }
 
+    public void ShowLevelUpPopUp(Vector3 spawnPosition)
+    {
+        Vector3 levelUpOffset = new (0f, 0.3f);
+        _spawnPosition = spawnPosition + levelUpOffset;
+
+        GameObject popUp = _popUpPool.Get();
+        popUp.transform.SetPositionAndRotation(_spawnPosition, Quaternion.identity);
+        TextMeshPro textMesh = popUp.GetComponent<TextMeshPro>();
+        textMesh.SetText("Level Up!");
+        textMesh.fontSize = 1.2f;
+        textMesh.color = new Color{ r = 132f , g = 85f, b = 255f, a = 255f};
+        textMesh.fontStyle = FontStyles.Bold;
+        StartCoroutine(FadePopUp(popUp));
+    }
+
     public void ShowDamagePopUp(string text, Vector3 spawnPosition, bool isCritical)
     {
         Color textColor;
@@ -26,7 +41,6 @@ public class PopUpSpawner : MonoBehaviour
         _spawnPosition = spawnPosition;
 
         GameObject popUp = _popUpPool.Get();
-        //PopUp popUp = popUpGo.GetComponent<PopUp>();
         popUp.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
         TextMeshPro textMesh = popUp.GetComponent<TextMeshPro>();
         textMesh.SetText(text);

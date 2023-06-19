@@ -977,6 +977,8 @@ MonoBehaviour:
   _type: 2
   _maxHp: 1000
   _baseDamage: 5
+  _xpAmountToGive: 300
+  _goldAmountToGive: 100
   _movementSpeed: 0
   _hpBar: {fileID: 6028627245858408901}
   _focusStartingPoint: {fileID: 8955164724354994903}

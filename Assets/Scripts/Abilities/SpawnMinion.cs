@@ -5,13 +5,8 @@ using UnityEngine;
 
 public class SpawnMinion : OnPointAbility
 {
-    public override void UseAbility(Vector3 abilityPosition)
+    public override void UseAbilityOverride(Vector3 abilityPosition)
     {
-        base.UseAbility(abilityPosition);
-        if (!_isCd)
-        {
-            _isCd = true;
-            Instantiate(_abilityObject, abilityPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
-        }
+        Instantiate(_abilityObject, abilityPosition, Quaternion.identity, GameObject.Find("RunTimeObjects").transform);
     }
 }

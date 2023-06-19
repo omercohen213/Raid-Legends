@@ -8,8 +8,22 @@ public class OnPointAbility : IndicatorAbility
     public override void OnAbilityTouch(Vector3 fingerPosition)
     {
         base.OnAbilityTouch(fingerPosition);
+
         _initialIndicatorPosition = GetClosestPointToPlayerRange(fingerPosition);
-        _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.identity, GameObject.Find("AbilityObjects").transform);
+        string indicatorObjectName = _indicatorPrefab.name;
+        GameObject existingIndicator = GameObject.Find("RunTimeObjects/" + indicatorObjectName);
+
+        if (existingIndicator != null)
+        {
+            _indicator = existingIndicator;
+            _indicator.transform.SetPositionAndRotation(_initialIndicatorPosition, Quaternion.identity);
+            _indicator.GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else
+        {
+            _indicator = Instantiate(_indicatorPrefab, _initialIndicatorPosition, Quaternion.identity, GameObject.Find("RunTimeObjects").transform);
+            _indicator.name = indicatorObjectName;
+        }
     }
 
     public override void MoveIndicator(Vector3 fingerPosition)

@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,12 +24,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private Player _player;
     private Entity _activeTarget;
     private bool _isTargetActive;
 
     [SerializeField] private GameObject _entityStats;
     [SerializeField] private Transform _hpBar;
-    [SerializeField] private Text _hpText;
+    [SerializeField] private TextMeshProUGUI _hpText;
+    [SerializeField] private TextMeshProUGUI _goldText;
 
     [SerializeField] private GameObject _recallProgressBar;
     public bool IsTargetActive { get => _isTargetActive; set => _isTargetActive = value; }
@@ -44,6 +47,16 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        if (!GameObject.Find("Player").TryGetComponent(out _player))
+        {
+            Debug.LogError("Missing Player object", this);
+        }
+    }
+
+    private void Start()
+    {
+        _goldText.text = _player.StartingGold.ToString();
     }
 
     private void Update()
@@ -51,21 +64,21 @@ public class UIManager : MonoBehaviour
         if (_isTargetActive)
         {
             UpdateUIEntityStats();
-        }        
+        }
     }
 
     public void ShowUIEntityStats(GameObject gameObject)
     {
         Entity entity = gameObject.GetComponent<Entity>();
-        _activeTarget = entity;      
-        _isTargetActive= true;
+        _activeTarget = entity;
+        _isTargetActive = true;
     }
     public void UpdateUIEntityStats()
     {
+        _entityStats.SetActive(true);
         _hpText.text = _activeTarget.Hp + " / " + _activeTarget.MaxHp;
         float hpRatio = (float)_activeTarget.Hp / _activeTarget.MaxHp;
         _hpBar.localScale = new Vector3(hpRatio, 1, 1);
-        _entityStats.SetActive(true);
     }
 
     public void HideUIEntityStats()
@@ -82,11 +95,6 @@ public class UIManager : MonoBehaviour
     public void HideRecallProgress()
     {
         _recallProgressBar.SetActive(false);
-    }
-
-    public void AbilityCancelHover()
-    {
-
     }
 
     // Show touch on ability image
@@ -128,5 +136,38 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(transitionDuration);
         ResetAbilityImage(abilityImage, abilityCdImage);
+    }
+
+    private void SetActiveLevelUpAbility(bool value)
+    {
+        GameObject abilitiesParent = GameObject.Find("Abilities");
+        if (abilitiesParent != null)
+        {
+            foreach (Transform ability in abilitiesParent.transform)
+            {
+                foreach (Transform abilityProperty in ability)
+                {
+                    if (abilityProperty.name == "LevelUpAbility")
+                    {
+                        abilityProperty.gameObject.SetActive(value);
+                    }
+                }
+            }
+        }
+    }
+
+    public void ShowLevelUpAbility()
+    {
+        SetActiveLevelUpAbility(true);
+    }
+
+    public void HideLevelUpAbility()
+    {
+        SetActiveLevelUpAbility(false);
+    }
+
+    public void UpdateGoldUI()
+    {
+        _goldText.text = _player.Gold.ToString();
     }
 }

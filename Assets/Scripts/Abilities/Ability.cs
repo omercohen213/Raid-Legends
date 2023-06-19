@@ -1,4 +1,4 @@
-using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,19 +7,21 @@ public class Ability : MonoBehaviour
     protected string _abilityName;
     protected Image _abilityImage;
     protected Image _abilityCdImage;
-    protected Text _abilityCdText;
+    protected TextMeshProUGUI _abilityCdText;
+    protected TextMeshProUGUI _abilityLevelText;
 
     [SerializeField] protected float _cd;
     protected float _cdTimer;
     protected bool _isCd;
 
+    //[SerializeField] protected GameObject _abilityObjectPrefab;
     [SerializeField] protected GameObject _abilityObject;
+
     [SerializeField] protected float _range;
     [SerializeField] protected int _baseDamage;
     [SerializeField] protected float _damageScaling; // damage multiplyer per level
     protected int _level;
 
-    protected readonly float _touchTransitionDuration = 0.2f;
     protected Player _player;
     [SerializeField] protected Animator _anim;
 
@@ -29,31 +31,40 @@ public class Ability : MonoBehaviour
     {
         if (!GameObject.Find("Player").TryGetComponent(out _player))
         {
-            Debug.LogError("Missing Player object");
+            Debug.LogError("Missing Player object", this);
         }
+
         _abilityName = gameObject.name;
 
         string imagePath = "Abilities/" + _abilityName + "/Image";
         if (!GameObject.Find(imagePath).TryGetComponent(out _abilityImage))
         {
-            Debug.LogError("Missing Image");
+            Debug.LogError("Missing Image", this);
         }
-        string CdImagePath = "Abilities/" + _abilityName + "/CDImage";
-        if (!GameObject.Find(CdImagePath).TryGetComponent(out _abilityCdImage))
+        string cdImagePath = "Abilities/" + _abilityName + "/CDImage";
+        if (!GameObject.Find(cdImagePath).TryGetComponent(out _abilityCdImage))
         {
-            Debug.LogError("Missing CDImage");
+            Debug.LogError("Missing CDImage", this);
         }
-        string CdTextPath = "Abilities/" + _abilityName + "/CDText";
-        if (!GameObject.Find(CdTextPath).TryGetComponent(out _abilityCdText))
+        string cdTextPath = "Abilities/" + _abilityName + "/CDText";
+        if (!GameObject.Find(cdTextPath).TryGetComponent(out _abilityCdText))
         {
-            Debug.LogError("Missing CDText");
-        }      
+            Debug.LogError("Missing CDText", this);
+        }
+        if (this is not BasicAttack)
+        {
+            string levelTextPath = "Abilities/" + _abilityName + "/Level/Text";
+            if (!GameObject.Find(levelTextPath).TryGetComponent(out _abilityLevelText))
+            {
+                Debug.LogError("Missing level text", this);
+            }
+        }        
     }
 
     protected virtual void Start()
     {
         _level = 1;
-        _cdTimer = _cd;       
+        _cdTimer = _cd;
         _abilityCdText.enabled = false;
     }
 
@@ -66,6 +77,15 @@ public class Ability : MonoBehaviour
     }
 
     public virtual void UseAbility(Vector3 abilityPosition)
+    {
+        if (!_isCd)
+        {
+            _isCd = true;
+            UseAbilityOverride(abilityPosition);
+        }
+    }
+
+    public virtual void UseAbilityOverride(Vector3 abilityPosition)
     {
         // override
     }
@@ -98,9 +118,17 @@ public class Ability : MonoBehaviour
     public virtual void OnAbilityTouch(Vector3 fingerPosition)
     {
         _player.UpdateAttackRange(_range);
-        
-        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityCdImage, _touchTransitionDuration);
-        _player.ShowPlayerRange(_touchTransitionDuration);
+        float touchTransitionDuration = 0.2f;
+        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityCdImage, touchTransitionDuration);
+        _player.ShowPlayerRange(touchTransitionDuration);
         _player.TryUseAbility(this);
+    }
+
+    public virtual void LevelUpAbility()
+    {
+        _level++;
+        _abilityLevelText.text = _level.ToString();
+        _baseDamage = Mathf.RoundToInt(_baseDamage * _damageScaling);
+        UIManager.Instance.HideLevelUpAbility();
     }
 }

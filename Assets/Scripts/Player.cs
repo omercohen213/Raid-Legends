@@ -7,31 +7,40 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : Entity
 {
+    [SerializeField] private Animator _anim;
+
     // Player Movement
     [SerializeField] private Joystick _joystick;
     [SerializeField] private Transform _bars;
     private readonly float _barsScale = 0.35f;
     private readonly float _joystickMinInput = 0.25f;
 
+    // Stats
+    protected int _xp;
+    protected int _gold;
+    protected readonly int _startingGold = 500;
+
+    [SerializeField] private GameObject _levelUpPrefab;
+    [SerializeField] private TextMeshProUGUI _levelText;
 
     // Abilities
-    [SerializeField] private Animator _anim;
     [SerializeField] private CircleCollider2D _attackRange;
     [SerializeField] private CircleCollider2D _targetRange;
     [SerializeField] private LineRenderer _rangeLineRenderer;
     private bool _isShowingRange;
-    private Vector3 _rangeOffset;
-    //[SerializeField] private SpriteRenderer _rangeSpriteRenderer;
     private bool _movingTowardsTarget = false;
     private Ability _currentAbilty;
     private Entity _lastTargetedEntity;
 
-    public Animator Anim { get => _anim; set => _anim = value; }
     public CircleCollider2D AttackRange { get => _attackRange; set => _attackRange = value; }
+    public int StartingGold { get => _startingGold; }
+    public int Gold { get => _gold; set => _gold = value; }
 
     protected override void Start()
     {
         base.Start();
+        _xp = 0;
+        _gold = _startingGold;
         _movementSpeed = 3f;
         _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Tower, Type.Minion };
         _critChance = 0.2f;
@@ -98,7 +107,7 @@ public class Player : Entity
         }
 
         if (_isShowingRange)
-        {   
+        {
             DrawRange();
         }
     }
@@ -212,7 +221,7 @@ public class Player : Entity
 
     public void DrawRange()
     {
-        _rangeOffset = new Vector3(0.17f, -0.34f);
+        Vector3 rangeOffset = new (0.17f, -0.34f);
         int segments = 50;
         _rangeLineRenderer.positionCount = segments + 2;
         _rangeLineRenderer.widthMultiplier = 0.1f;
@@ -231,7 +240,7 @@ public class Player : Entity
             float x = Mathf.Sin(Mathf.Deg2Rad * angle) * _attackRange.radius;
             float y = Mathf.Cos(Mathf.Deg2Rad * angle) * _attackRange.radius;
 
-            Vector3 point = new Vector3(x, y, 0f) + transform.position + _rangeOffset;
+            Vector3 point = new Vector3(x, y, 0f) + transform.position + rangeOffset;
             _rangeLineRenderer.SetPosition(i, point);
 
             angle += angleStep;
@@ -243,8 +252,8 @@ public class Player : Entity
         _attackRange.radius = radius;
     }
 
-        // Show range
-        public void ShowPlayerRange()
+    // Show range
+    public void ShowPlayerRange()
     {
         _isShowingRange = true;
         _rangeLineRenderer.enabled = true;
@@ -271,6 +280,48 @@ public class Player : Entity
         _rangeLineRenderer.enabled = false;
     }
 
+    public void GainXp(int xpGain)
+    {
+        _xp += xpGain;
+        int _xpToLevelUp = GameManager.Instance.GetXpToLevelUp(_level);
+        if (_xp > _xpToLevelUp)
+        {
+            _xp = 0;
+            OnLevelUp();
+        }
+    }
+    public void GainGold(int goldGain)
+    {
+        _gold += goldGain;
+        UIManager.Instance.UpdateGoldUI();
+    }
+
+    public override void OnLevelUp()
+    {
+        base.OnLevelUp();
+        // check if changes animation scale when player turns
+        _levelText.text = _level.ToString();
+        GameObject levelUpObject = Instantiate(_levelUpPrefab, transform.position, Quaternion.identity, GameObject.Find("Player").transform);
+        UIManager.Instance.ShowLevelUpAbility();
+        StartCoroutine(LevelUpOff(levelUpObject));
+    }
+
+    private IEnumerator LevelUpOff(GameObject levelUpObject)
+    {
+        yield return new WaitForSeconds(1.5f);
+        Destroy(levelUpObject);
+    }
+
+
+    public void BasicAttack()
+    {
+        _anim.SetBool("Attack", true);
+
+    }
+    public void BasicAttackOff()
+    {
+        _anim.SetBool("Attack", false);
+    }
     public void Dead()
     {
         _anim.SetBool("Dead", true);

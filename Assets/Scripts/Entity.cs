@@ -18,6 +18,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
     [SerializeField] protected int _maxHp;
     [SerializeField] protected int _baseDamage;
     protected int _level;
+    [SerializeField] protected int _xpAmountToGive;
+    [SerializeField] protected int _goldAmountToGive;
 
     // Movement
     protected Vector3 _moveDir;
@@ -60,6 +62,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     protected virtual void Start()
     {
+        _level = 1;
         _hp = _maxHp;
         _targetedEntity = null;
         _entitiesInTargetRange = new List<Entity>();
@@ -112,7 +115,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         return other._team != _team;
     }
 
-    public virtual void ReceiveDamage(int damageAmount, bool isCritical, bool isDamageFromPlayer)
+    public virtual void ReceiveDamage(int damageAmount, bool isCritical, Entity attacker)
     {
         if (isCritical)
             damageAmount *= 2;
@@ -121,12 +124,13 @@ public abstract class Entity : MonoBehaviour, IDamageable
         if (_hp <= 0)
         {
             _hp = 0;
-            Death();
+            Death(attacker);
         }
         float spriteHeight = _entitySpriteRenderer.bounds.size.y;
         Vector3 damagePopUpPosition = transform.position + new Vector3(0, spriteHeight / 2);
 
-        if (this is Player || isDamageFromPlayer)
+        // Show damage popups only for player
+        if (this is Player || attacker is Player)
             PopUpSpawner.Instance.ShowDamagePopUp(damageAmount.ToString(), damagePopUpPosition, isCritical);
 
         OnHpChange();
@@ -173,7 +177,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
             {
                 if (entitiesInRange.Contains(closestEntity))
                 {
-                    TargetEnemy(closestEntity);                  
+                    TargetEnemy(closestEntity);
                     return closestEntity;
                 }
             }
@@ -203,9 +207,24 @@ public abstract class Entity : MonoBehaviour, IDamageable
         return closestEntity;
     }
 
-    public virtual void Death()
+    public virtual void Death(Entity attacker)
     {
         UIManager.Instance.HideUIEntityStats();
+        if (attacker is Player)
+        {
+            Player playerAttacker = attacker.GetComponent<Player>();
+            playerAttacker.GainXp(_xpAmountToGive);
+            playerAttacker.GainGold(_goldAmountToGive);
+
+        }
+    }
+
+    public virtual void OnLevelUp()
+    {
+        _level++;
+        _baseDamage += 10;
+        _maxHp += 100;
+        UIManager.Instance.UpdateUIEntityStats();
     }
 
     public virtual void ResetHp()

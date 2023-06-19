@@ -36,9 +36,9 @@ public class Minion : Entity
 
     public void SetPool(ObjectPool<Minion> pool) => _pool = pool;
 
-    public override void Death()
+    public override void Death(Entity entity)
     {
-        base.Death();
+        base.Death(entity);
         gameObject.SetActive(false);
         if (_pool != null)
         {

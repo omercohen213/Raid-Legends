@@ -40,7 +40,7 @@ public class FireballCollision : MonoBehaviour
         {
             if (collEntity.IsAgainst(_player))
             {
-                collEntity.ReceiveDamage(abilityDamage, false, true);
+                collEntity.ReceiveDamage(abilityDamage, false, _player);
                 gameObject.SetActive(false);
             }
         }

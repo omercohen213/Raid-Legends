@@ -68,8 +68,9 @@ public class Recall : Ability
 
     public override void OnAbilityTouch(Vector3 fingerPosition)
     {
+        float touchTransitionDuration = 0.2f;
+        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityImage, touchTransitionDuration);
         UIManager.Instance.ShowRecallProgress();
-        UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityImage, _touchTransitionDuration);
         UseAbility(fingerPosition);
     }
 
@@ -81,7 +82,7 @@ public class Recall : Ability
             _abilityObject.SetActive(true);
             _abilityObject.transform.position = _player.transform.position + _recallOffset;
             _anim.SetBool("Recall", true);
-            _recallTimer = _recallTime; // Reset the recall timer when the ability is used
+            _recallTimer = _recallTime;
             _initialPosition = _player.transform.position;
             _initialHp = _player.Hp;
         }

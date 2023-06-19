@@ -4,11 +4,11 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    public void ReceiveDamage(int damage, bool isCritical, bool isDamageFromPlayer);
+    public void ReceiveDamage(int damage, bool isCritical, Entity attacker);
     public void Attack();
     void OnHpChange();
-    void Death();
-    //bool IsDamageToKill(float damage);
+    void Death(Entity attacker);
+
     //void GetStun(float duration);
     //void GetKnockUp(float duration, float distance);
 }

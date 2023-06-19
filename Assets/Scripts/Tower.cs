@@ -71,7 +71,7 @@ public class Tower : Entity
     private void DealRampingDamage()
     {
         _damage *= _damageRampRate;
-        _targetedEntity.ReceiveDamage((int)_damage, false, false);
+        _targetedEntity.ReceiveDamage((int)_damage, false, this);
     }
 
     private void ShowRange()
@@ -104,7 +104,7 @@ public class Tower : Entity
         return null;
     }
 
-    public override void Death()
+    public override void Death(Entity attacker)
     {
         _anim.SetTrigger("Explosion");
         StartCoroutine(WaitForExplosion());

@@ -49,12 +49,13 @@ public class TouchManager : MonoBehaviour
         GameObject touchIndicator = Instantiate(_touchPrefab, finger.screenPosition, Quaternion.identity, GameObject.Find("UI").transform);
         _touchIndicators.Add(fingerId, touchIndicator);
 
-        // Check touch position
+        // Screen touch position
         Collider2D screenColl = Physics2D.OverlapPoint(finger.screenPosition);
         if (screenColl != null)
         {
             if (screenColl.gameObject.CompareTag("AbilityUI"))
             {
+                // Ability
                 if (screenColl.gameObject.TryGetComponent<Ability>(out var touchedAbility))
                 {
                     _abilityFingerIndex = finger.index;
@@ -64,9 +65,17 @@ public class TouchManager : MonoBehaviour
                     touchedAbility.OnAbilityTouch(fingerPosition);
                     return;
                 }
+
+                // Level up ability
+                if (screenColl.gameObject.name == "LevelUpAbility")
+                {
+                    Ability ability = screenColl.gameObject.GetComponentInParent<Ability>();
+                    ability.LevelUpAbility();
+                }
             }
         }
 
+        // World touch position
         float touchRadius = 0.5f;
         Vector3 touchPosition = Camera.main.ScreenToWorldPoint(finger.screenPosition);
         Collider2D[] worldColliders = Physics2D.OverlapCircleAll(touchPosition, touchRadius);

@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!58 &7465487402397114080
@@ -408,6 +408,8 @@ MonoBehaviour:
   _type: 0
   _maxHp: 100
   _baseDamage: 5
+  _xpAmountToGive: 500
+  _goldAmountToGive: 21
   _movementSpeed: 2
   _hpBar: {fileID: 6193729184714381392}
 --- !u!70 &1941866844941568917
@@ -900,7 +902,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!58 &2263552664081066198
