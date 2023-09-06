@@ -7,6 +7,7 @@ public class DirectionAbility : IndicatorAbility
     protected readonly Vector3 _directionOffset = new(0.17f, -0.35f);
     protected Vector3 _direction;
 
+    // OnAbilityTouch refers only to the player's ability 
     public override void OnAbilityTouch(Vector3 fingerPosition)
     {
         base.OnAbilityTouch(fingerPosition);
@@ -15,7 +16,7 @@ public class DirectionAbility : IndicatorAbility
         float angle = GetIndicatorAngle(fingerPosition);
         string indicatorObjectName = _indicatorPrefab.name;
         GameObject existingIndicator = GameObject.Find("RunTimeObjects/" + indicatorObjectName);
-        
+
         if (existingIndicator != null)
         {
             _indicator = existingIndicator;
@@ -35,12 +36,11 @@ public class DirectionAbility : IndicatorAbility
         float angle = GetIndicatorAngle(fingerPosition);
         _indicator.transform.SetPositionAndRotation(_player.transform.position + _directionOffset, Quaternion.Euler(0f, 0f, angle));
     }
-
     public override void ReleaseIndicator(Vector3 fingerPosition)
     {
-        UseAbility(fingerPosition);
+        CastAbility(fingerPosition, _player);
         base.ReleaseIndicator(fingerPosition);
     }
 
-    
+
 }

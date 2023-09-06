@@ -4,12 +4,16 @@ using UnityEngine;
 public class BasicAttack : Ability
 {
     private readonly float _attackDuration = 0.2f;
-    public override void UseAbilityOverride(Vector3 abilityPosition)
+    public override void CastAbility(Vector3 abilityPosition, Entity caster)
     {
-        BasicAttackAnimation();
-        _player.ShowPlayerRange(_attackDuration);
-        bool isCritical = Random.value < _player.CritChance;
-        _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, _player);
+        if (!_isCd)
+        {
+            _isCd = true;
+            BasicAttackAnimation();
+            _player.ShowPlayerRange(_attackDuration);
+            bool isCritical = Random.value < _player.CritChance;
+            _player.TargetedEntity.ReceiveDamage(_player.BaseDamage, isCritical, _player);
+        }
     }
 
     // Basic attack animation

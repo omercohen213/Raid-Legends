@@ -15,7 +15,9 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     // Stats
     protected int _hp;
+    protected int _mp;
     [SerializeField] protected int _maxHp;
+    [SerializeField] protected int _maxMp;
     [SerializeField] protected int _baseDamage;
     protected int _level;
     [SerializeField] protected int _xpAmountToGive;
@@ -25,12 +27,16 @@ public abstract class Entity : MonoBehaviour, IDamageable
     protected Vector3 _moveDir;
     [SerializeField] protected float _movementSpeed;
     [SerializeField] Transform _hpBar;
+    [SerializeField] protected Transform _bars;
 
     // Targeting
     protected Entity _targetedEntity;
     protected List<Entity> _entitiesInTargetRange; // To determine if enemy entity can be targeted
     protected List<Entity> _entitiesInAttackRange; // To determine if entity can attack enemy entity in target range
     protected List<Type> _targetingPriority; // Ordered list of targeting pririty
+    [SerializeField] protected CircleCollider2D _attackRange;
+    [SerializeField] protected CircleCollider2D _targetRange;
+    protected bool _movingTowardsTarget;
 
     // Damage
     protected float _critChance;
@@ -45,6 +51,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
     public Entity TargetedEntity { get => _targetedEntity; set => _targetedEntity = value; }
     public List<Entity> EntitiesInTargetRange { get => _entitiesInTargetRange; set => _entitiesInTargetRange = value; }
     public List<Entity> EntitiesInAttackRange { get => _entitiesInAttackRange; set => _entitiesInAttackRange = value; }
+    public CircleCollider2D AttackRange { get => _attackRange; set => _attackRange = value; }
     public float CritChance { get => _critChance; }
 
     protected virtual void Awake()
@@ -64,6 +71,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         _level = 1;
         _hp = _maxHp;
+        _mp = _maxMp;
         _targetedEntity = null;
         _entitiesInTargetRange = new List<Entity>();
         _entitiesInAttackRange = new List<Entity>();
@@ -107,6 +115,31 @@ public abstract class Entity : MonoBehaviour, IDamageable
         if (moveDir == Vector3.zero)
         {
             rb.velocity = Vector2.zero;
+        }
+    }
+
+    protected virtual void ChangeBarsScale()
+    {
+        Vector3 currentEntityScale = transform.localScale;
+        Vector3 currentBarsScale = _bars.transform.localScale;
+
+        // Going towards target when trying to attack
+        if (_targetedEntity != null)
+        {
+            Vector3 targetedEntityPos = _targetedEntity.transform.position;
+            if (targetedEntityPos.x < transform.position.x)
+            {
+                currentEntityScale.x = -1f;
+                currentBarsScale.x = -1f;
+            }
+            else
+            {
+                currentEntityScale.x = 1f;
+                currentBarsScale.x = 1f;
+            }
+            transform.localScale = currentEntityScale;
+            _bars.localScale = currentBarsScale;
+
         }
     }
 
@@ -224,7 +257,6 @@ public abstract class Entity : MonoBehaviour, IDamageable
         _level++;
         _baseDamage += 10;
         _maxHp += 100;
-        UIManager.Instance.UpdateUIEntityStats();
     }
 
     public virtual void ResetHp()

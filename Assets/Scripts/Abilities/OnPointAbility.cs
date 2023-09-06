@@ -46,7 +46,7 @@ public class OnPointAbility : IndicatorAbility
     public override void ReleaseIndicator(Vector3 fingerPosition)
     {
         Vector3 indicatorPos = _indicator.transform.position;
-        UseAbility(indicatorPos);
+        CastAbility(indicatorPos, _player);
         base.ReleaseIndicator(fingerPosition);
     }
 

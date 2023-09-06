@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class IndicatorAbility : Ability
-{  
+{
     [SerializeField] protected GameObject _indicatorPrefab;
     protected GameObject _indicator;
-    protected Vector3 _initialIndicatorPosition;    
+    protected Vector3 _initialIndicatorPosition;
 
     protected GameObject _abilityCancelGo;
     private Image _abilityCancelImage;
@@ -59,7 +59,7 @@ public class IndicatorAbility : Ability
         _player.HidePlayerRange();
         _abilityCancelGo.SetActive(false);
         _indicator.GetComponent<SpriteRenderer>().enabled = false;
-    }  
+    }
 
     public void AbilityCancel()
     {

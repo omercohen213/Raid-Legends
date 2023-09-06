@@ -79,5 +79,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueMageMinion
       objectReference: {fileID: 0}
+    - target: {fileID: 7913683940366283038, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 64.031784
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 13.390213
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5306128
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8387967217353628333, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.84761435
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}

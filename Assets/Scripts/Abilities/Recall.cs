@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -71,10 +72,10 @@ public class Recall : Ability
         float touchTransitionDuration = 0.2f;
         UIManager.Instance.ShrinkAbilityImage(_abilityImage, _abilityImage, touchTransitionDuration);
         UIManager.Instance.ShowRecallProgress();
-        UseAbility(fingerPosition);
+        CastAbility(fingerPosition, _player);
     }
 
-    public override void UseAbility(Vector3 abilityPosition)
+    public override void CastAbility(Vector3 abilityPosition, Entity caster)
     {
         if (!_isRecalling)
         {

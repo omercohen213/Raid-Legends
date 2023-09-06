@@ -11,8 +11,6 @@ public class Player : Entity
 
     // Player Movement
     [SerializeField] private Joystick _joystick;
-    [SerializeField] private Transform _bars;
-    private readonly float _barsScale = 0.35f;
     private readonly float _joystickMinInput = 0.25f;
 
     // Stats
@@ -24,15 +22,11 @@ public class Player : Entity
     [SerializeField] private TextMeshProUGUI _levelText;
 
     // Abilities
-    [SerializeField] private CircleCollider2D _attackRange;
-    [SerializeField] private CircleCollider2D _targetRange;
     [SerializeField] private LineRenderer _rangeLineRenderer;
     private bool _isShowingRange;
-    private bool _movingTowardsTarget = false;
     private Ability _currentAbilty;
     private Entity _lastTargetedEntity;
 
-    public CircleCollider2D AttackRange { get => _attackRange; set => _attackRange = value; }
     public int StartingGold { get => _startingGold; }
     public int Gold { get => _gold; set => _gold = value; }
 
@@ -51,29 +45,11 @@ public class Player : Entity
         float horizontalInput = _joystick.Horizontal;
         float verticalInput = _joystick.Vertical;
 
-        Vector3 currentPlayerScale = transform.localScale;
-        Vector3 currentBarsScale = _bars.transform.localScale;
-
         // Move only if joystick input exceeds the minimum input threshold
         if (Mathf.Abs(horizontalInput) > _joystickMinInput || Mathf.Abs(verticalInput) > _joystickMinInput)
         {
             _movingTowardsTarget = false;
-
-            // Negative scales to match sprite movement
-            if (horizontalInput > _joystickMinInput)
-            {
-                currentPlayerScale.x = 1f;
-                currentBarsScale.x = _barsScale;
-
-            }
-            else if (horizontalInput < -_joystickMinInput)
-            {
-                currentPlayerScale.x = -1f;
-                currentBarsScale.x = -_barsScale;
-            }
-            transform.localScale = currentPlayerScale;
-            _bars.localScale = currentBarsScale;
-
+            ChangeBarsScale();
             _moveDir = new Vector3(horizontalInput, verticalInput, 0);
             Walk();
         }
@@ -88,20 +64,7 @@ public class Player : Entity
         // Going towards target when trying to attack
         if (_movingTowardsTarget)
         {
-            Vector3 targetedEntityPos = _targetedEntity.transform.position;
-            if (targetedEntityPos.x < transform.position.x)
-            {
-                currentPlayerScale.x = -1f;
-                currentBarsScale.x = -_barsScale;
-            }
-            else
-            {
-                currentPlayerScale.x = 1f;
-                currentBarsScale.x = _barsScale;
-            }
-            transform.localScale = currentPlayerScale;
-            _bars.localScale = currentBarsScale;
-
+            base.ChangeBarsScale();
             MoveTowardsTarget();
             Walk();
         }
@@ -110,6 +73,29 @@ public class Player : Entity
         {
             DrawRange();
         }
+    }
+
+    protected override void ChangeBarsScale()
+    {
+        Vector3 currentPlayerScale = transform.localScale;
+        Vector3 currentBarsScale = _bars.transform.localScale;
+
+        float horizontalInput = _joystick.Horizontal;
+
+        // Negative scales to match sprite movement
+        if (horizontalInput > _joystickMinInput)
+        {
+            currentPlayerScale.x = 1f;
+            currentBarsScale.x = 1f;
+
+        }
+        else if (horizontalInput < -_joystickMinInput)
+        {
+            currentPlayerScale.x = -1f;
+            currentBarsScale.x = -1;
+        }
+        transform.localScale = currentPlayerScale;
+        _bars.localScale = currentBarsScale;
     }
 
     // Target given entity and show target sprite
@@ -158,7 +144,7 @@ public class Player : Entity
             _attackRange.radius = _currentAbilty.Range;
             if (EntitiesInAttackRange.Contains(_targetedEntity))
             {
-                ability.UseAbility(_targetedEntity.transform.position);
+                ability.CastAbility(_targetedEntity.transform.position,this);
             }
             else
             {
@@ -184,7 +170,7 @@ public class Player : Entity
                 _targetedEntity = priorityTarget;
                 if (EntitiesInAttackRange.Contains(_targetedEntity))
                 {
-                    ability.UseAbility(_targetedEntity.transform.position);
+                    ability.CastAbility(_targetedEntity.transform.position,this);
                 }
                 else
                 {
@@ -215,13 +201,13 @@ public class Player : Entity
         else
         {
             _movingTowardsTarget = false;
-            _currentAbilty.UseAbility(_targetedEntity.transform.position);
+            _currentAbilty.CastAbility(_targetedEntity.transform.position, this);
         }
     }
 
     public void DrawRange()
     {
-        Vector3 rangeOffset = new (0.17f, -0.34f);
+        Vector3 rangeOffset = new(0.17f, -0.34f);
         int segments = 50;
         _rangeLineRenderer.positionCount = segments + 2;
         _rangeLineRenderer.widthMultiplier = 0.1f;
