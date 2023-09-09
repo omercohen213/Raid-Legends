@@ -1,12 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2226755367533886237
+--- !u!1001 &4510194996453029436
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1044911307599213166, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: _movementSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1044911307599213166, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: _minionAttackPrefab
+      value: 
+      objectReference: {fileID: 1159239530737624459, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
     - target: {fileID: 1311982262309593051, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -31,17 +39,21 @@ PrefabInstance:
       propertyPath: m_Offset.x
       value: -0.016447816
       objectReference: {fileID: 0}
+    - target: {fileID: 2260164627615402116, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: _minionAttackPrefab
+      value: 
+      objectReference: {fileID: 1639723774461509073, guid: 134061bf3f9585645954fe801d5a07fb, type: 3}
     - target: {fileID: 3381820948846873137, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3381820948846873137, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -62.46
       objectReference: {fileID: 0}
     - target: {fileID: 3381820948846873137, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 13.24
       objectReference: {fileID: 0}
     - target: {fileID: 3381820948846873137, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_LocalPosition.z
@@ -79,12 +91,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueMageMinion
       objectReference: {fileID: 0}
+    - target: {fileID: 3381820948846873141, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5760515642812479544, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5760515642812479544, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5760515642812479544, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_LinearDrag
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5760515642812479544, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
       propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5760515642812479544, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}
+      propertyPath: m_UseAutoMass
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7913683940366283038, guid: b5cb740a9dd29c143bfd26b10d82c218, type: 3}

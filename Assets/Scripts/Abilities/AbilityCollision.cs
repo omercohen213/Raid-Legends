@@ -39,6 +39,7 @@ public class AbilityCollision : MonoBehaviour
             {
                 collEntity.ReceiveDamage(_abilityDamage, false, _caster);
                 gameObject.SetActive(false);
+                Debug.Log("hit " + collEntity + " " + _abilityDamage);
             }
         }
     }

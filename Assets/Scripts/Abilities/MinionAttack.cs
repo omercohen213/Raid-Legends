@@ -10,18 +10,19 @@ public class MinionAttack : Ability
 
     public override void CastAbility(Vector3 abilityPosition, Entity caster)
     {
-        GameObject abilityCollisionGo = Instantiate(_minionAttackPrefab, transform.position, Quaternion.identity, transform);
-        AbilityCollision abilityCollision = abilityCollisionGo.GetComponent<AbilityCollision>();
-
         if (!_isCd)
         {
             _isCd = true;
-            Vector3 direction = abilityPosition - caster.TargetedEntity.transform.position;
+            Vector3 initialPosition = caster.transform.position;
+            Vector3 direction = caster.TargetedEntity.transform.position - abilityPosition;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            abilityCollision.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            GameObject abilityCollisionGo = Instantiate(_minionAttackPrefab, initialPosition, Quaternion.AngleAxis(angle, Vector3.forward), transform);
+            AbilityCollision abilityCollision = abilityCollisionGo.GetComponent<AbilityCollision>();
+
             float speed = 1f;
             float maxRange = int.MaxValue;
-            abilityCollision.SetAbilityValues(caster, _baseDamage, speed, maxRange, transform.position, direction);
+            abilityCollision.SetAbilityValues(caster, _baseDamage, speed, maxRange, initialPosition, direction);
         }
     }
 }

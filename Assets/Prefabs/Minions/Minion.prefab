@@ -363,7 +363,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3381820948846873137}
   - component: {fileID: 1044911307599213166}
-  - component: {fileID: 2185425959295482536}
   - component: {fileID: 1941866844941568917}
   - component: {fileID: 5760515642812479544}
   m_Layer: 7
@@ -418,28 +417,6 @@ MonoBehaviour:
   _bars: {fileID: 780198224775529936}
   _attackRange: {fileID: 7465487402397114080}
   _targetRange: {fileID: 2263552664081066198}
-  _minionAttack: {fileID: 2185425959295482536}
---- !u!114 &2185425959295482536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3381820948846873141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe81035ac0f43604b893669e83324e56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isPlayerAbility: 0
-  _cd: 2
-  _abilityObject: {fileID: 7913683940366283038}
-  _range: 10
-  _baseDamage: 10
-  _damageScaling: 1
-  _anim: {fileID: 0}
-  _indicatorPrefab: {fileID: 0}
-  _minionAttackCollision: {fileID: 778053939714304673}
 --- !u!70 &1941866844941568917
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -469,8 +446,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_LinearDrag: 10
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 1
@@ -1153,26 +1130,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1159239530737624459, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7104648772317174801, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
+      propertyPath: _minionAttackPrefab
+      value: 
+      objectReference: {fileID: 1639723774461509073, guid: 134061bf3f9585645954fe801d5a07fb, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
---- !u!114 &778053939714304673 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8577470820275306036, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
-  m_PrefabInstance: {fileID: 9062790200069592213}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7913683940366283038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1442280cc6359914b9caad7534357afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &7913683940366283038 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1159239530737624459, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
-  m_PrefabInstance: {fileID: 9062790200069592213}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8387967217353628333 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 697341154025672248, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}

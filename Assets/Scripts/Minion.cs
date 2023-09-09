@@ -86,8 +86,6 @@ public class Minion : Entity
             Vector3 targetPos = _targetedEntity.transform.position;
             Vector3 minionPos = transform.position;
             Vector3 moveDir = (targetPos - minionPos).normalized;
-            Vector3 movement = _movementSpeed * Time.deltaTime * moveDir;
-           
 
             float distanceToTarget = Vector3.Distance(minionPos, targetPos);
             float stoppingDistance = _attackRange.radius;
@@ -96,7 +94,6 @@ public class Minion : Entity
             if (distanceToTarget > stoppingDistance)
             {
                 UpdateMovement(moveDir);
-                //transform.Translate(movement);
             }
 
             else
