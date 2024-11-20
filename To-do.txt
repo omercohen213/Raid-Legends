@@ -1,0 +1,5 @@
+- aa animation fix
+- push entities radius with a circle collider (collision avoidance)
+- a* pathfinding
+- boid algorithm?
+- ai legend

@@ -23,7 +23,7 @@ public class AbilityCollision : MonoBehaviour
         Vector3 movement = _speed * Time.deltaTime * _direction.normalized;
         transform.position += movement;
 
-        // Disable object if reaches max range
+        // Disable object if reaches max range (object pooling?)
         if (Vector3.Distance(transform.position, _initialPosition) >= _maxRange)
         {
             gameObject.SetActive(false);
@@ -39,7 +39,7 @@ public class AbilityCollision : MonoBehaviour
             {
                 collEntity.ReceiveDamage(_abilityDamage, false, _caster);
                 gameObject.SetActive(false);
-                Debug.Log("hit " + collEntity + " " + _abilityDamage);
+                //Debug.Log("hit " + collEntity + " " + _abilityDamage);
             }
         }
     }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -51,13 +50,13 @@ public class Player : Entity
             _movingTowardsTarget = false;
             ChangeBarsScale();
             _moveDir = new Vector3(horizontalInput, verticalInput, 0);
-            Walk();
+            Walk(); // animate
         }
 
         else
         {
             _moveDir = Vector3.zero;
-            WalkOff();
+            WalkOff(); // stop animation
         }
         base.UpdateMovement(_moveDir);
 
@@ -66,7 +65,7 @@ public class Player : Entity
         {
             base.ChangeBarsScale();
             MoveTowardsTarget();
-            Walk();
+            Walk(); // animate
         }
 
         if (_isShowingRange)
@@ -75,6 +74,7 @@ public class Player : Entity
         }
     }
 
+    // Change bars according to moving direction
     protected override void ChangeBarsScale()
     {
         Vector3 currentPlayerScale = transform.localScale;
@@ -135,6 +135,7 @@ public class Player : Entity
 
     // On ability use, start moving towards target.
     // If there is no targeted entity, try to find one in range
+    // **** make sure works when enitity dies when going towards it *****
     public void TryUseAbility(Ability ability)
     {
         _currentAbilty = ability;
@@ -183,6 +184,13 @@ public class Player : Entity
     // On ability use, move towards targeted entity and then use the ability upon reaching the maximum range
     private void MoveTowardsTarget()
     {
+        // If targeted entity is untargetable or dead, cancel this movement 
+        if (_targetedEntity == null)
+        {
+            _movingTowardsTarget = false;
+            return;
+        }
+
         Vector3 targetPos = _targetedEntity.transform.position;
         Vector3 playerPos = transform.position;
         Vector3 moveDir = (targetPos - playerPos).normalized;

@@ -49,7 +49,7 @@ public class TouchManager : MonoBehaviour
         GameObject touchIndicator = Instantiate(_touchPrefab, finger.screenPosition, Quaternion.identity, GameObject.Find("UI").transform);
         _touchIndicators.Add(fingerId, touchIndicator);
 
-        // Screen touch position
+        // Screen touch position (for UI)
         Collider2D screenColl = Physics2D.OverlapPoint(finger.screenPosition);
         if (screenColl != null)
         {
