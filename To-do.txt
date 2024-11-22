@@ -3,3 +3,5 @@
 - a* pathfinding
 - boid algorithm?
 - ai legend
+
+- main menu screens separated to scenes
