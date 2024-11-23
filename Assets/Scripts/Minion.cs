@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class Minion : Entity
 {
     private ObjectPool<Minion> _pool;
     private EntityState _currentState;
+
+    private List<Vector3> _path;
+    private int _currentPathIndex = 0;
 
     protected override void Awake()
     {
@@ -38,6 +42,12 @@ public class Minion : Entity
         rb.velocity = new Vector2(moveDir.x * _movementSpeed, moveDir.y * _movementSpeed);
     }
 
+    private void StartPathfinding()
+    {
+        _path = Pathfinding.FindPath(transform.position, _targetedEntity.transform.position);
+        _currentPathIndex = 0;
+    }
+
     private void Update()
     {
         switch (_currentState)
@@ -55,6 +65,8 @@ public class Minion : Entity
                 break;
         }
     }
+
+    // Move in the predefined direction when no target is in range
     private void MoveWithoutTarget()
     {
         if (_targetedEntity != null)
@@ -69,7 +81,7 @@ public class Minion : Entity
     private void CastAbility()
     {
         _movementSpeed = 0;
-        MinionAttack minionAttack = GetComponentInChildren<MinionAttack>();
+        MageMinionAttack minionAttack = GetComponentInChildren<MageMinionAttack>();
         minionAttack.CastAbility(transform.position, this);
 
         if (_targetedEntity == null)
@@ -78,30 +90,48 @@ public class Minion : Entity
         }
     }
 
+    // Move towards target enemy within range
     private void MoveTowardsTarget()
     {
-
-        if (_targetedEntity != null)
+        // No target in range: move without target
+        if (_targetedEntity == null)
         {
-            Vector3 targetPos = _targetedEntity.transform.position;
-            Vector3 minionPos = transform.position;
-            Vector3 moveDir = (targetPos - minionPos).normalized;
-
-            float distanceToTarget = Vector3.Distance(minionPos, targetPos);
-            float stoppingDistance = _attackRange.radius;
-
-            // Go towards the target as long as not in ability range
-            if (distanceToTarget > stoppingDistance)
-            {
-                UpdateMovement(moveDir);
-            }
-
-            else
-            {
-                _currentState = EntityState.CastingAbility;
-            }
+            _currentState = EntityState.MovingWithoutTarget;
+            return;
         }
-        else _currentState = EntityState.MovingWithoutTarget;
+
+        // Calculate distance to the targeted entity
+        float distanceToTarget = Vector3.Distance(transform.position, _targetedEntity.transform.position);
+        float stoppingDistance = _attackRange.radius;
+
+        // Stop moving and switch to attack if within range
+        if (distanceToTarget <= stoppingDistance)
+        {
+            _currentState = EntityState.CastingAbility;
+            return;
+        }
+
+        // Recalculate path if null or completed
+        if (_path == null || _currentPathIndex >= _path.Count)
+        {
+            StartPathfinding();
+            return;
+        }
+
+        // Move towards the next waypoint on the path
+        Vector3 targetWaypoint = _path[_currentPathIndex];
+        if (Vector3.Distance(transform.position, targetWaypoint) < 0.5f)
+        {
+            _currentPathIndex++;
+            if (_currentPathIndex >= _path.Count) return;
+        }
+
+        Vector3 pathDirection = (targetWaypoint - transform.position).normalized;
+        Vector3 boidAdjustment = CalculateBoidAdjustment();
+
+        // Combine path direction with boid adjustment
+        Vector3 moveDirection = (pathDirection + boidAdjustment).normalized;
+        UpdateMovement(moveDirection);
     }
 
     public void SetPool(ObjectPool<Minion> pool) => _pool = pool;
@@ -119,6 +149,45 @@ public class Minion : Entity
             Destroy(gameObject);
         }
     }
+
+    // Find the movement direction according to the nearby minions and return it
+    private Vector3 CalculateBoidAdjustment()
+    {
+        Vector3 separation = Vector3.zero;
+        Vector3 alignment = Vector3.zero;
+        Vector3 cohesion = Vector3.zero;
+        int count = 0;
+
+        Collider2D[] nearbyMinions = Physics2D.OverlapCircleAll(transform.position, 2f);
+        foreach (Collider2D other in nearbyMinions)
+        {
+            if (other.gameObject != gameObject && other.TryGetComponent(out Minion minion))
+            {
+                // Separation: Avoid collision
+                separation += (transform.position - other.transform.position).normalized / (transform.position - other.transform.position).magnitude;
+
+                // Alignment: Match velocity
+                alignment += new Vector3 (minion.GetComponent<Rigidbody2D>().velocity.x , minion.GetComponent<Rigidbody2D>().velocity.y,0);
+
+                // Cohesion: Move towards average position
+                cohesion += other.transform.position;
+
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            separation /= count;
+            alignment /= count;
+            cohesion /= count;
+
+            cohesion = (cohesion - transform.position).normalized;
+        }
+
+        return (separation * 2.5f + alignment * 0.5f + cohesion * 1.0f).normalized;
+    }
+
     private enum EntityState
     {
         MovingTowardsTarget,

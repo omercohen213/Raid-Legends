@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.XR.Haptics;
 
-public class MinionAttack : Ability
+public class MageMinionAttack : Ability
 {
     [SerializeField] private GameObject _minionAttackPrefab;
 

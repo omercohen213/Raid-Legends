@@ -1,6 +1,6 @@
 - aa animation fix
-- push entities radius with a circle collider (collision avoidance)
 - a* pathfinding
+- add melee minions
 - boid algorithm?
 - ai legend
 

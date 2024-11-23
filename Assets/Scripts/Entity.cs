@@ -79,32 +79,6 @@ public abstract class Entity : MonoBehaviour, IDamageable
     // Checks collision and updates movement
     protected virtual void UpdateMovement(Vector3 moveDir)
     {
-        /*Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        Vector2 targetVelocity = new Vector2(moveDir.x * speed, moveDir.y * speed);
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, coll.bounds.size, 0f, targetVelocity.normalized, targetVelocity.magnitude * Time.deltaTime, LayerMask.GetMask("Obstacle", "Moving Entity"));
-        if (hit.collider == null)
-        {
-            // No collision, apply the target velocity to the Rigidbody
-            rb.velocity = targetVelocity;
-        }
-        else
-        {
-            // Collision detected, calculate the slide direction
-            Vector2 slideDirection = Vector2.zero;
-
-            // Check if the hit normal is valid for sliding
-            if (Vector2.Dot(hit.normal, targetVelocity.normalized) < 0.5f)
-            {
-                // Determine the slide direction perpendicular to the hit normal
-                slideDirection = Vector2.Perpendicular(hit.normal).normalized;
-            }
-
-            // Calculate the slide velocity based on the slide direction and target velocity magnitude
-            Vector2 slideVelocity = slideDirection * targetVelocity.magnitude;
-
-            // Apply the slide velocity to the Rigidbody
-            rb.velocity = slideVelocity;
-        }   */
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
         Vector2 velocity = new(moveDir.x * _movementSpeed, moveDir.y * _movementSpeed);

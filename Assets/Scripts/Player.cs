@@ -41,8 +41,8 @@ public class Player : Entity
 
     private void Update()
     {
-        float horizontalInput = _joystick.Horizontal;
-        float verticalInput = _joystick.Vertical;
+        float horizontalInput = _joystick.Horizontal * _movementSpeed;
+        float verticalInput = _joystick.Vertical * _movementSpeed;
 
         // Move only if joystick input exceeds the minimum input threshold
         if (Mathf.Abs(horizontalInput) > _joystickMinInput || Mathf.Abs(verticalInput) > _joystickMinInput)
