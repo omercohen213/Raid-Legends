@@ -7,6 +7,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
 {
     protected Player _player;
     private SpriteRenderer _entitySpriteRenderer;
+    [SerializeField] protected RectTransform _miniMapIcon;
 
     // Team and type
     [SerializeField] protected Team _team;
@@ -30,8 +31,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
 
     // Targeting
     protected Entity _targetedEntity;
-    protected List<Entity> _entitiesInTargetRange; // To determine if enemy entity can be targeted
-    protected List<Entity> _entitiesInAttackRange; // To determine if entity can attack enemy entity in target range
+    [SerializeField] protected List<Entity> _entitiesInTargetRange; // To determine if enemy entity can be targeted
+    [SerializeField] protected List<Entity> _entitiesInAttackRange; // To determine if entity can attack enemy entity in target range
     protected List<Type> _targetingPriority; // Ordered list of targeting pririty
     [SerializeField] protected CircleCollider2D _attackRange;
     [SerializeField] protected CircleCollider2D _targetRange;
@@ -52,9 +53,13 @@ public abstract class Entity : MonoBehaviour, IDamageable
     public List<Entity> EntitiesInAttackRange { get => _entitiesInAttackRange; set => _entitiesInAttackRange = value; }
     public CircleCollider2D AttackRange { get => _attackRange; set => _attackRange = value; }
     public float CritChance { get => _critChance; }
+    public RectTransform MiniMapIcon { get => _miniMapIcon; set => _miniMapIcon = value; }
 
     protected virtual void Awake()
     {
+        _entitiesInTargetRange = new List<Entity>();
+        _entitiesInAttackRange = new List<Entity>();
+
         if (!GameObject.Find("Player").TryGetComponent(out _player))
         {
             Debug.LogError("Missing Player object");
@@ -72,8 +77,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         _hp = _maxHp;
         _mp = _maxMp;
         _targetedEntity = null;
-        _entitiesInTargetRange = new List<Entity>();
-        _entitiesInAttackRange = new List<Entity>();
+        GameManager.Instance.AddEntity(this);
     }
 
     // Checks collision and updates movement
@@ -116,9 +120,16 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    public bool IsAgainst(Entity other)
+    // Check if this entity is allied with the player
+    public bool IsAlly()
     {
-        return other._team != _team;
+        return _team == _player._team;
+    }
+
+    // Check if other entity is allied with this one
+    public bool IsAlly(Entity other)
+    {
+        return _team == other._team;
     }
 
     public virtual void ReceiveDamage(int damageAmount, bool isCritical, Entity attacker)
@@ -221,8 +232,8 @@ public abstract class Entity : MonoBehaviour, IDamageable
             Player playerAttacker = attacker.GetComponent<Player>();
             playerAttacker.GainXp(_xpAmountToGive);
             playerAttacker.GainGold(_goldAmountToGive);
-
         }
+        GameManager.Instance.RemoveEntity(this);
     }
 
     public virtual void OnLevelUp()
@@ -236,5 +247,11 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         _hp = _maxHp;
         OnHpChange();
+    }
+
+    public virtual void ClearTargets()
+    {
+        _entitiesInAttackRange.Clear();
+        _entitiesInTargetRange.Clear();
     }
 }

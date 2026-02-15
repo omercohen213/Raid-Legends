@@ -158,7 +158,7 @@ public class TouchManager : MonoBehaviour
 
     private void OnEntityTouch(Entity entity)
     {
-        if (_player.IsAgainst(entity))
+        if (!_player.IsAlly(entity))
         {
             _player.TargetEnemy(entity);
         }

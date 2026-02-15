@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : Entity
 {
+    public static Player Instance;
+
     [SerializeField] private Animator _anim;
 
     // Player Movement
@@ -29,6 +33,14 @@ public class Player : Entity
     public int StartingGold { get => _startingGold; }
     public int Gold { get => _gold; set => _gold = value; }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
     protected override void Start()
     {
         base.Start();

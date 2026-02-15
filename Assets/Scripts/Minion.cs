@@ -9,7 +9,6 @@ using UnityEngine.Pool;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Minion : Entity
 {
-    private ObjectPool<Minion> _pool;
     private EntityState _currentState;
 
     private List<Vector3> _path;
@@ -18,8 +17,9 @@ public class Minion : Entity
     protected override void Awake()
     {
         base.Awake();
-    }
+        _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower };
 
+    }
     protected override void Start()
     {
         base.Start();
@@ -32,8 +32,8 @@ public class Minion : Entity
         {
             _moveDir = Vector2.left;
         }
-        _targetingPriority = new List<Type> { Type.Player, Type.AIPlayer, Type.Minion, Type.Tower };
-        _currentState = EntityState.MovingWithoutTarget;
+        
+        _currentState = EntityState.MovingWithoutTarget;       
     }
 
     protected override void UpdateMovement(Vector3 moveDir)
@@ -42,22 +42,22 @@ public class Minion : Entity
         rb.velocity = new Vector2(moveDir.x * _movementSpeed, moveDir.y * _movementSpeed);
     }
 
-    private void StartPathfinding()
+    protected void StartPathfinding()
     {
         _path = Pathfinding.FindPath(transform.position, _targetedEntity.transform.position);
         _currentPathIndex = 0;
     }
 
-    private void Update()
+    protected void Update()
     {
         switch (_currentState)
         {
-            case EntityState.MovingTowardsTarget:
-                MoveTowardsTarget();
-                break;
-
             case EntityState.MovingWithoutTarget:
                 MoveWithoutTarget();
+                break;
+
+            case EntityState.MovingTowardsTarget:
+                MoveTowardsTarget();
                 break;
 
             case EntityState.CastingAbility:
@@ -67,7 +67,7 @@ public class Minion : Entity
     }
 
     // Move in the predefined direction when no target is in range
-    private void MoveWithoutTarget()
+    protected void MoveWithoutTarget()
     {
         if (_targetedEntity != null)
         {
@@ -78,7 +78,7 @@ public class Minion : Entity
         UpdateMovement(_moveDir);
     }
 
-    private void CastAbility()
+    protected void CastAbility()
     {
         _movementSpeed = 0;
         MageMinionAttack minionAttack = GetComponentInChildren<MageMinionAttack>();
@@ -91,7 +91,7 @@ public class Minion : Entity
     }
 
     // Move towards target enemy within range
-    private void MoveTowardsTarget()
+    protected void MoveTowardsTarget()
     {
         // No target in range: move without target
         if (_targetedEntity == null)
@@ -134,24 +134,14 @@ public class Minion : Entity
         UpdateMovement(moveDirection);
     }
 
-    public void SetPool(ObjectPool<Minion> pool) => _pool = pool;
-
-    public override void Death(Entity entity)
+    public override void Death(Entity attacker)
     {
-        base.Death(entity);
-        gameObject.SetActive(false);
-        if (_pool != null)
-        {
-            _pool.Release(this);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Death(attacker);
+        PoolFactory.Instance.ReleaseObject(this);
     }
 
     // Find the movement direction according to the nearby minions and return it
-    private Vector3 CalculateBoidAdjustment()
+    protected Vector3 CalculateBoidAdjustment()
     {
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
@@ -188,7 +178,7 @@ public class Minion : Entity
         return (separation * 2.5f + alignment * 0.5f + cohesion * 1.0f).normalized;
     }
 
-    private enum EntityState
+    protected enum EntityState
     {
         MovingTowardsTarget,
         MovingWithoutTarget,

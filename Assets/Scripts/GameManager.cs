@@ -5,10 +5,15 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    private readonly List<int> _xpTable = new ();
+    private List<Entity> _entities; // A list to track all entities in the game
+    private List<int> _xpTable;
+
+    public List<Entity> Entities { get => _entities; set => _entities = value; }
 
     private void Awake()
     {
+        _entities = new List<Entity>();
+        _xpTable = new List<int> ();
         Instance = this;
         CreateXpTable();
     }
@@ -30,4 +35,15 @@ public class GameManager : MonoBehaviour
         return _xpTable[lvl];
     }
 
+    // Add entity to entities list
+    public void AddEntity(Entity entity)
+    {
+        _entities.Add(entity);
+    }
+
+    // Remove entity from entities list
+    public void RemoveEntity(Entity entity)
+    {
+        _entities.Remove(entity);
+    }
 }

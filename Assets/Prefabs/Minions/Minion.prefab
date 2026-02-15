@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 76140940847416722}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2, y: 0.11, z: 0}
+  m_LocalPosition: {x: 0.12, y: 0.26, z: 0}
   m_LocalScale: {x: 0.8037, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -119,7 +119,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0.112544, y: -0.324071}
   serializedVersion: 2
-  m_Radius: 3
+  m_Radius: 1.2
 --- !u!1 &275751932363197557
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,7 +361,7 @@ SpriteRenderer:
   m_SortingLayerID: -15705159
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1583888334, guid: b6cc0fcb890f1704cb49571d859640bf, type: 3}
+  m_Sprite: {fileID: 366475889, guid: b6cc0fcb890f1704cb49571d859640bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 1044911307599213166}
   - component: {fileID: 1941866844941568917}
   - component: {fileID: 5760515642812479544}
+  - component: {fileID: 336843178854170517}
   m_Layer: 7
   m_Name: Minion
   m_TagString: Minion
@@ -419,7 +420,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3381820948846873141}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2584aa575f6b05c47aec57c27696abc1, type: 3}
   m_Name: 
@@ -434,9 +435,10 @@ MonoBehaviour:
   _movementSpeed: 2
   _hpBar: {fileID: 6193729184714381392}
   _bars: {fileID: 780198224775529936}
+  _entitiesInTargetRange: []
+  _entitiesInAttackRange: []
   _attackRange: {fileID: 7465487402397114080}
   _targetRange: {fileID: 2263552664081066198}
-  distance: 5
 --- !u!70 &1941866844941568917
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -499,6 +501,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &336843178854170517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3381820948846873141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c76c04cf94601b240944caa4d4b8bb69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _team: 1
+  _type: 0
+  _maxHp: 100
+  _maxMp: 100
+  _baseDamage: 10
+  _xpAmountToGive: 10
+  _goldAmountToGive: 10
+  _movementSpeed: 2
+  _hpBar: {fileID: 6852280106277594041}
+  _bars: {fileID: 198781945442661443}
+  _entitiesInTargetRange: []
+  _entitiesInAttackRange: []
+  _attackRange: {fileID: 7465487402397114080}
+  _targetRange: {fileID: 2263552664081066198}
 --- !u!1 &3953953126681769878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1196,6 +1224,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1159239530737624459, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104648772317174801, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}
+      propertyPath: _range
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7104648772317174801, guid: 19b789c3fe544f145ab058fd5ca553db, type: 3}

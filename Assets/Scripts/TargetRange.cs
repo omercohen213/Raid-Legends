@@ -19,7 +19,7 @@ public class TargetRange : MonoBehaviour
     {
         if (otherCollider.TryGetComponent<Entity>(out var otherEntity))
         {
-            if (_ownerEntity.IsAgainst(otherEntity))
+            if (!_ownerEntity.IsAlly(otherEntity))
             {
                 _ownerEntity.EntitiesInTargetRange.Add(otherEntity);
 

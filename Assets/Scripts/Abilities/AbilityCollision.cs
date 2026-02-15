@@ -35,7 +35,7 @@ public class AbilityCollision : MonoBehaviour
         // Check if hits an enemy
         if (other.TryGetComponent(out Entity collEntity))
         {
-            if (collEntity.IsAgainst(_caster))
+            if (!collEntity.IsAlly(_caster))
             {
                 collEntity.ReceiveDamage(_abilityDamage, false, _caster);
                 gameObject.SetActive(false);

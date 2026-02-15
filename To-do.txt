@@ -1,7 +1,8 @@
 - aa animation fix
-- a* pathfinding
 - add melee minions
-- boid algorithm?
 - ai legend
+- fix minion attacks direction
+- make minion attacks chase the enemy
+- fix minion ability or targeting
 
 - main menu screens separated to scenes

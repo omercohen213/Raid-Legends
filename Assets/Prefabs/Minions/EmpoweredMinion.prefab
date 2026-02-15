@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1181987615062116723, guid: 9b79ea45f087f16459bc4a114130e71b, type: 3}
@@ -25,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 888522614, guid: 45b17f768d877924090c097c7591b300, type: 3}
     - target: {fileID: 3461475949331296552, guid: 9b79ea45f087f16459bc4a114130e71b, type: 3}
       propertyPath: m_Name
-      value: EmpoweredBlueMageMinion
+      value: EmpoweredMinion
       objectReference: {fileID: 0}
     - target: {fileID: 3461475949331296556, guid: 9b79ea45f087f16459bc4a114130e71b, type: 3}
       propertyPath: m_RootOrder
@@ -84,4 +85,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b79ea45f087f16459bc4a114130e71b, type: 3}
